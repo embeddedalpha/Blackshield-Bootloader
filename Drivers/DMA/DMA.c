@@ -460,7 +460,7 @@ void DMA1_Stream4_IRQHandler(void)
 	{
 		if (__DMA1_Stream4_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA1_Stream4_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA1_Stream4_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA1 -> HIFCR |= DMA_HIFCR_CTCIF4;
 
 			if(__DMA1_Stream4_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
