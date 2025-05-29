@@ -60,23 +60,53 @@ volatile bool U5RX_Complete = 0;
 volatile bool U6TX_Complete = 0;
 volatile bool U6RX_Complete = 0;
 
-void USART1_TX_ISR() {U1TX_Complete = 1;}
-void USART1_RX_ISR() {U1RX_Complete = 1;}
+void USART1_TX_ISR() {
+	U1TX_Complete = 1;
+}
 
-void USART2_TX_ISR() {U2TX_Complete = 1;}
-void USART2_RX_ISR() {U2RX_Complete = 1;}
+void USART1_RX_ISR() {
+	U1RX_Complete = 1;
+}
 
-void USART3_TX_ISR() {U3TX_Complete = 1;}
-void USART3_RX_ISR() {U3RX_Complete = 1;}
+void USART2_TX_ISR() {
+	U2TX_Complete = 1;
+}
 
-void USART4_TX_ISR() {U4TX_Complete = 1;}
-void USART4_RX_ISR() {U4RX_Complete = 1;}
+void USART2_RX_ISR() {
+	U2RX_Complete = 1;
+}
 
-void USART5_TX_ISR() {U5TX_Complete = 1;}
-void USART5_RX_ISR() {U5RX_Complete = 1;}
+void USART3_TX_ISR() {
+	U3TX_Complete = 1;
+}
 
-void USART6_TX_ISR() {U6TX_Complete = 1;}
-void USART6_RX_ISR() {U6RX_Complete = 1;}
+void USART3_RX_ISR() {
+	U3RX_Complete = 1;
+}
+
+void USART4_TX_ISR() {
+	U4TX_Complete = 1;
+}
+
+void USART4_RX_ISR() {
+	U4RX_Complete = 1;
+}
+
+void USART5_TX_ISR() {
+	U5TX_Complete = 1;
+}
+
+void USART5_RX_ISR() {
+	U5RX_Complete = 1;
+}
+
+void USART6_TX_ISR() {
+	U6TX_Complete = 1;
+}
+
+void USART6_RX_ISR() {
+	U6RX_Complete = 1;
+}
 
 
 
@@ -86,60 +116,60 @@ void UART4_IRQHandler(void)
 	USART_SR = UART4 -> SR;
 	if(USART_SR & USART_SR_CTS)
 	{
-	    if (__usart_4_config__ ->ISR_Routines.CTS_ISR) {
-	    	__usart_4_config__ ->ISR_Routines.CTS_ISR();
-	    	UART4->SR &= ~USART_SR_CTS;  // Clear the Break interrupt flag
-	    }
+		if (__usart_4_config__ ->ISR_Routines.CTS_ISR) {
+			__usart_4_config__ ->ISR_Routines.CTS_ISR();
+			UART4->SR &= ~USART_SR_CTS;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_LBD)
 	{
-	    if (__usart_4_config__ ->ISR_Routines.LIN_Break_Detection_ISR) {
-	    	__usart_4_config__ ->ISR_Routines.LIN_Break_Detection_ISR();
-	    	UART4->SR &= ~USART_SR_LBD;  // Clear the Break interrupt flag
-	    }
+		if (__usart_4_config__ ->ISR_Routines.LIN_Break_Detection_ISR) {
+			__usart_4_config__ ->ISR_Routines.LIN_Break_Detection_ISR();
+			UART4->SR &= ~USART_SR_LBD;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_TXE)
 	{
-	    if (__usart_4_config__ ->ISR_Routines.Transmit_Empty_ISR) {
-	    	__usart_4_config__ ->ISR_Routines.Transmit_Empty_ISR();
-	    	UART4->SR &= ~USART_SR_TXE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_4_config__ ->ISR_Routines.Transmit_Empty_ISR) {
+			__usart_4_config__ ->ISR_Routines.Transmit_Empty_ISR();
+			UART4->SR &= ~USART_SR_TXE;  // Clear the Break interrupt flag
+		}
 	}
 
 
 	if(USART_SR & USART_SR_TC)
 	{
-	    if (__usart_4_config__ ->ISR_Routines.Transmission_Complete_ISR) {
-	    	__usart_4_config__ ->ISR_Routines.Transmission_Complete_ISR();
-	    	UART4->SR &= ~USART_SR_TC;  // Clear the Break interrupt flag
-	    }
+		if (__usart_4_config__ ->ISR_Routines.Transmission_Complete_ISR) {
+			__usart_4_config__ ->ISR_Routines.Transmission_Complete_ISR();
+			UART4->SR &= ~USART_SR_TC;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_RXNE)
 	{
-	    if (__usart_4_config__ ->ISR_Routines.Receiver_Empty_ISR) {
-	    	__usart_4_config__ ->ISR_Routines.Receiver_Empty_ISR();
-	    	UART4->SR &= ~USART_SR_RXNE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_4_config__ ->ISR_Routines.Receiver_Empty_ISR) {
+			__usart_4_config__ ->ISR_Routines.Receiver_Empty_ISR();
+			UART4->SR &= ~USART_SR_RXNE;  // Clear the Break interrupt flag
+		}
 	}
 
 
 	if(USART_SR & USART_SR_IDLE)
 	{
-	    if (__usart_4_config__ ->ISR_Routines.Idle_Line_ISR) {
-	    	__usart_4_config__ ->ISR_Routines.Idle_Line_ISR();
-	    	UART4->SR &= ~USART_SR_IDLE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_4_config__ ->ISR_Routines.Idle_Line_ISR) {
+			__usart_4_config__ ->ISR_Routines.Idle_Line_ISR();
+			UART4->SR &= ~USART_SR_IDLE;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_PE)
 	{
-	    if (__usart_4_config__ ->ISR_Routines.Parity_ISR) {
-	    	__usart_4_config__ ->ISR_Routines.Parity_ISR();
-	    	UART4->SR &= ~USART_SR_PE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_4_config__ ->ISR_Routines.Parity_ISR) {
+			__usart_4_config__ ->ISR_Routines.Parity_ISR();
+			UART4->SR &= ~USART_SR_PE;  // Clear the Break interrupt flag
+		}
 	}
 
 }
@@ -150,60 +180,60 @@ void USART1_IRQHandler(void)
 	USART_SR = USART1 -> SR;
 	if(USART_SR & USART_SR_CTS)
 	{
-	    if (__usart_1_config__ ->ISR_Routines.CTS_ISR) {
-	    	__usart_1_config__ ->ISR_Routines.CTS_ISR();
-	    	USART1->SR &= ~USART_SR_CTS;  // Clear the Break interrupt flag
-	    }
+		if (__usart_1_config__ ->ISR_Routines.CTS_ISR) {
+			__usart_1_config__ ->ISR_Routines.CTS_ISR();
+			USART1->SR &= ~USART_SR_CTS;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_LBD)
 	{
-	    if (__usart_1_config__ ->ISR_Routines.LIN_Break_Detection_ISR) {
-	    	__usart_1_config__ ->ISR_Routines.LIN_Break_Detection_ISR();
-	    	USART1->SR &= ~USART_SR_LBD;  // Clear the Break interrupt flag
-	    }
+		if (__usart_1_config__ ->ISR_Routines.LIN_Break_Detection_ISR) {
+			__usart_1_config__ ->ISR_Routines.LIN_Break_Detection_ISR();
+			USART1->SR &= ~USART_SR_LBD;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_TXE)
 	{
-	    if (__usart_1_config__ ->ISR_Routines.Transmit_Empty_ISR) {
-	    	__usart_1_config__ ->ISR_Routines.Transmit_Empty_ISR();
-	    	USART1->SR &= ~USART_SR_TXE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_1_config__ ->ISR_Routines.Transmit_Empty_ISR) {
+			__usart_1_config__ ->ISR_Routines.Transmit_Empty_ISR();
+			USART1->SR &= ~USART_SR_TXE;  // Clear the Break interrupt flag
+		}
 	}
 
 
 	if(USART_SR & USART_SR_TC)
 	{
-	    if (__usart_1_config__ ->ISR_Routines.Transmission_Complete_ISR) {
-	    	__usart_1_config__ ->ISR_Routines.Transmission_Complete_ISR();
-	    	USART1->SR &= ~USART_SR_TC;  // Clear the Break interrupt flag
-	    }
+		if (__usart_1_config__ ->ISR_Routines.Transmission_Complete_ISR) {
+			__usart_1_config__ ->ISR_Routines.Transmission_Complete_ISR();
+			USART1->SR &= ~USART_SR_TC;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_RXNE)
 	{
-	    if (__usart_1_config__ ->ISR_Routines.Receiver_Empty_ISR) {
-	    	__usart_1_config__ ->ISR_Routines.Receiver_Empty_ISR();
-	    	USART1->SR &= ~USART_SR_RXNE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_1_config__ ->ISR_Routines.Receiver_Empty_ISR) {
+			__usart_1_config__ ->ISR_Routines.Receiver_Empty_ISR();
+			USART1->SR &= ~USART_SR_RXNE;  // Clear the Break interrupt flag
+		}
 	}
 
 
 	if(USART_SR & USART_SR_IDLE)
 	{
-	    if (__usart_1_config__ ->ISR_Routines.Idle_Line_ISR) {
-	    	__usart_1_config__ ->ISR_Routines.Idle_Line_ISR();
-	    	USART1->SR &= ~USART_SR_IDLE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_1_config__ ->ISR_Routines.Idle_Line_ISR) {
+			__usart_1_config__ ->ISR_Routines.Idle_Line_ISR();
+			USART1->SR &= ~USART_SR_IDLE;  // Clear the Break interrupt flag
+		}
 	}
 
 	if(USART_SR & USART_SR_PE)
 	{
-	    if (__usart_1_config__ ->ISR_Routines.Parity_ISR) {
-	    	__usart_1_config__ ->ISR_Routines.Parity_ISR();
-	    	USART1->SR &= ~USART_SR_PE;  // Clear the Break interrupt flag
-	    }
+		if (__usart_1_config__ ->ISR_Routines.Parity_ISR) {
+			__usart_1_config__ ->ISR_Routines.Parity_ISR();
+			USART1->SR &= ~USART_SR_PE;  // Clear the Break interrupt flag
+		}
 	}
 
 }
@@ -305,9 +335,9 @@ static void PIN_Setup(USART_Config *config)
 		__usart_1_config__ = config;
 
 		if((config->mode == USART_Configuration.Mode.Asynchronous) ||
-		   (config->mode == USART_Configuration.Mode.Synchronous) ||
-		   (config->mode == USART_Configuration.Mode.IrDA) ||
-		   (config->mode == USART_Configuration.Mode.LIN) )
+				(config->mode == USART_Configuration.Mode.Synchronous) ||
+				(config->mode == USART_Configuration.Mode.IrDA) ||
+				(config->mode == USART_Configuration.Mode.LIN) )
 		{
 			if(config->TX_Pin == USART1_TX_Pin.PA9)GPIO_Pin_Init(GPIOA, USART1_TX_Pin.PA9, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_1);
 			else if(config->TX_Pin == USART1_TX_Pin.PB6)GPIO_Pin_Init(GPIOB, USART1_TX_Pin.PB6, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_1);
@@ -326,11 +356,11 @@ static void PIN_Setup(USART_Config *config)
 					GPIO_Pin_Init(GPIOA, USART1_CTS_Pin.PA11, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_1);
 					GPIO_Pin_Init(GPIOA, USART1_RTS_Pin.PA12, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_1);
 				}
-		    }
+			}
 		}
 		else if((config->mode == USART_Configuration.Mode.SmartCard) ||
-		   (config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
-		   (config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex) )
+				(config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
+				(config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex) )
 		{
 			if(config->TX_Pin == USART1_TX_Pin.PA9)GPIO_Pin_Init(GPIOA, USART1_TX_Pin.PA9, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_1);
 			if((config->mode == USART_Configuration.Mode.SmartCard_Clock))GPIO_Pin_Init(GPIOA, USART1_CLK_Pin.PA8, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_1);
@@ -342,9 +372,9 @@ static void PIN_Setup(USART_Config *config)
 	{
 		__usart_2_config__ = config;
 		if((config->mode == USART_Configuration.Mode.Asynchronous) ||
-		   (config->mode == USART_Configuration.Mode.Synchronous) ||
-		   (config->mode == USART_Configuration.Mode.IrDA) ||
-		   (config->mode == USART_Configuration.Mode.LIN) )
+				(config->mode == USART_Configuration.Mode.Synchronous) ||
+				(config->mode == USART_Configuration.Mode.IrDA) ||
+				(config->mode == USART_Configuration.Mode.LIN) )
 		{
 			if(config->TX_Pin == USART2_TX_Pin.PA2)GPIO_Pin_Init(GPIOA, USART2_TX_Pin.PA2, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_2);
 			else if(config->TX_Pin == USART2_TX_Pin.PD5)GPIO_Pin_Init(GPIOD, USART2_TX_Pin.PD5, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_2);
@@ -383,11 +413,11 @@ static void PIN_Setup(USART_Config *config)
 					}
 				}
 
-		    }
+			}
 		}
 		else if((config->mode == USART_Configuration.Mode.SmartCard) ||
-		   (config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
-		   (config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex))
+				(config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
+				(config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex))
 		{
 			if(config->TX_Pin == USART2_TX_Pin.PA2)
 			{
@@ -416,9 +446,9 @@ static void PIN_Setup(USART_Config *config)
 	{
 		__usart_3_config__ = config;
 		if((config->mode == USART_Configuration.Mode.Asynchronous) ||
-		   (config->mode == USART_Configuration.Mode.Synchronous) ||
-		   (config->mode == USART_Configuration.Mode.IrDA) ||
-		   (config->mode == USART_Configuration.Mode.LIN) )
+				(config->mode == USART_Configuration.Mode.Synchronous) ||
+				(config->mode == USART_Configuration.Mode.IrDA) ||
+				(config->mode == USART_Configuration.Mode.LIN) )
 		{
 			if(config->TX_Pin == USART3_TX_Pin.PB11)GPIO_Pin_Init(GPIOA, USART3_TX_Pin.PB11, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_3);
 			else if(config->TX_Pin == USART3_TX_Pin.PC10)GPIO_Pin_Init(GPIOB, USART3_TX_Pin.PC10, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_3);
@@ -448,11 +478,11 @@ static void PIN_Setup(USART_Config *config)
 					if(config->CLK_Pin == USART3_RTS_Pin.PB14)GPIO_Pin_Init(GPIOB, USART3_RTS_Pin.PB14, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_3);
 					else if(config->CLK_Pin == USART3_RTS_Pin.PD12)GPIO_Pin_Init(GPIOD, USART3_RTS_Pin.PD12, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_3);
 				}
-		    }
+			}
 		}
 		else if((config->mode == USART_Configuration.Mode.SmartCard) ||
-		   (config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
-		   (config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex) )
+				(config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
+				(config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex) )
 		{
 			if(config->TX_Pin == USART3_TX_Pin.PB11)GPIO_Pin_Init(GPIOA, USART3_TX_Pin.PB11, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_3);
 			else if(config->TX_Pin == USART3_TX_Pin.PC10)GPIO_Pin_Init(GPIOB, USART3_TX_Pin.PC10, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_3);
@@ -466,8 +496,8 @@ static void PIN_Setup(USART_Config *config)
 	{
 		__usart_4_config__ = config;
 		if((config->mode == USART_Configuration.Mode.Asynchronous) ||
-		   (config->mode == USART_Configuration.Mode.IrDA) ||
-		   (config->mode == USART_Configuration.Mode.LIN))
+				(config->mode == USART_Configuration.Mode.IrDA) ||
+				(config->mode == USART_Configuration.Mode.LIN))
 		{
 			if(config->TX_Pin == UART4_TX_Pin.PA0)GPIO_Pin_Init(GPIOA, UART4_TX_Pin.PA0, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_4);
 			else if(config->TX_Pin == UART4_TX_Pin.PC10)GPIO_Pin_Init(GPIOC, UART4_TX_Pin.PC10, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_4);
@@ -480,8 +510,8 @@ static void PIN_Setup(USART_Config *config)
 	{
 		__usart_5_config__ = config;
 		if((config->mode == USART_Configuration.Mode.Asynchronous) ||
-		   (config->mode == USART_Configuration.Mode.IrDA) ||
-		   (config->mode == USART_Configuration.Mode.LIN))
+				(config->mode == USART_Configuration.Mode.IrDA) ||
+				(config->mode == USART_Configuration.Mode.LIN))
 		{
 			if(config->TX_Pin == UART5_TX_Pin.PD2)GPIO_Pin_Init(GPIOA, UART5_TX_Pin.PD2, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.UART_5);
 			if(config->RX_Pin == UART5_RX_Pin.PC12)GPIO_Pin_Init(GPIOA, UART5_RX_Pin.PC12, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.UART_5);
@@ -490,17 +520,17 @@ static void PIN_Setup(USART_Config *config)
 	else if(config->Port == USART6)
 	{
 		if((config->mode == USART_Configuration.Mode.Asynchronous) ||
-		   (config->mode == USART_Configuration.Mode.Synchronous) ||
-		   (config->mode == USART_Configuration.Mode.IrDA) ||
-		   (config->mode == USART_Configuration.Mode.LIN) )
+				(config->mode == USART_Configuration.Mode.Synchronous) ||
+				(config->mode == USART_Configuration.Mode.IrDA) ||
+				(config->mode == USART_Configuration.Mode.LIN) )
 		{
 			if(config->TX_Pin == USART6_TX_Pin.PC6)GPIO_Pin_Init(GPIOC, USART6_TX_Pin.PC6, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_6);
 			if(config->RX_Pin == USART6_RX_Pin.PC7)GPIO_Pin_Init(GPIOC, USART6_RX_Pin.PC7, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_6);
 			if(config->CLK_Pin == USART6_CLK_Pin.PC8)GPIO_Pin_Init(GPIOC, USART6_CLK_Pin.PC8, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_6);
 		}
 		else if((config->mode == USART_Configuration.Mode.SmartCard) ||
-		   (config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
-		   (config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex) )
+				(config->mode == USART_Configuration.Mode.SmartCard_Clock) ||
+				(config->mode == USART_Configuration.Mode.Single_Wire_Half_Duplex) )
 		{
 			if(config->TX_Pin == USART6_TX_Pin.PC6)GPIO_Pin_Init(GPIOA, USART6_TX_Pin.PC6, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_6);
 			if((config->mode == USART_Configuration.Mode.SmartCard_Clock))GPIO_Pin_Init(GPIOA, USART6_CLK_Pin.PC8, GPIO_Configuration.Mode.Alternate_Function, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.No_Pull_Up_Down, GPIO_Configuration.Alternate_Functions.USART_6);
@@ -520,7 +550,7 @@ int8_t USART_Init(USART_Config *config)
 	usart_dma_instance_number = USART_Get_Instance_Number(config);
 	if(usart_dma_instance_number == -1) return -1;
 
-//	USART1 -> CR1 |= USART_CR1_UE;
+	//	USART1 -> CR1 |= USART_CR1_UE;
 
 
 	double brr;
@@ -528,23 +558,21 @@ int8_t USART_Init(USART_Config *config)
 	int div_frac_1;
 	int mantissa_1;
 
-	if(config -> Port == USART1)
+	if((config -> Port == USART1) || (config -> Port == USART6))
 	{
-		int32_t freq = SystemAPB2_Clock_Speed();
-		 brr = (freq/ (16.0 * 2.0 * (double)(config->baudrate)));
-
-		 separateFractionAndIntegral(brr, &div_frac, &mantissa);
-		 div_frac_1 = (int)(ceil(div_frac*16.0));
-		 mantissa_1 = (int)(ceil(mantissa));
+		uint32_t freq = SystemAPB2_Clock_Speed();
+		brr = (freq/ (16.0 * 2.0 * (double)(config->baudrate)));
+		separateFractionAndIntegral(brr, &div_frac, &mantissa);
+		div_frac_1 = (int)(ceil(div_frac*16.0));
+		mantissa_1 = (int)(ceil(mantissa));
 	}
 	else
 	{
-		int32_t freq = SystemAPB2_Clock_Speed();
-		 brr = (freq/ (2 * 16.0 * 2.0 * (double)(config->baudrate)));
-
-		 separateFractionAndIntegral(brr, &div_frac, &mantissa);
-		 div_frac_1 = (int)(ceil(div_frac*16.0));
-		 mantissa_1 = (int)(ceil(mantissa));
+		uint32_t freq = SystemAPB1_Clock_Speed();
+		brr = ((double)freq/ (16.0 * (double)(config->baudrate)));
+		separateFractionAndIntegral(brr, &div_frac, &mantissa);
+		div_frac_1 = (int)(ceil(div_frac*16.0));
+		mantissa_1 = (int)(ceil(mantissa));
 
 	}
 
@@ -552,7 +580,8 @@ int8_t USART_Init(USART_Config *config)
 
 
 	config->Port->BRR = (mantissa_1<<4)|(div_frac_1);
-	config->Port->CR1 |= config->parity;
+	config->Port->CR1 |= config->parity ;
+	//	config->Port->CR1 |= USART_CR1_OVER8 ;
 
 	if(config -> interrupt == USART_Configuration.Interrupt_Type.Disable)
 	{
@@ -666,7 +695,7 @@ int8_t USART_Init(USART_Config *config)
 		{
 			xUSART_RX[5].Request = DMA_Configuration.Request.UART6_RX;
 			xUSART_RX[5].interrupts = DMA_Configuration.DMA_Interrupts.Transfer_Complete;
-			xUSART_RX[5].ISR_Routines.Full_Transfer_Commplete_ISR = USART5_RX_ISR;
+			xUSART_RX[5].ISR_Routines.Full_Transfer_Commplete_ISR = USART6_RX_ISR;
 		}
 
 		xUSART_RX[usart_dma_instance_number].circular_mode = DMA_Configuration.Circular_Mode.Disable;
@@ -689,7 +718,7 @@ int8_t USART_Init(USART_Config *config)
 	if((config->dma_enable & USART_Configuration.DMA_Enable.TX_Enable) == USART_Configuration.DMA_Enable.TX_Enable)
 	{
 
-		config -> Port  -> CR3 |= USART_CR3_DMAT;
+
 
 		if(config->Port == USART1)
 		{
@@ -731,7 +760,6 @@ int8_t USART_Init(USART_Config *config)
 		xUSART_TX[usart_dma_instance_number].circular_mode = DMA_Configuration.Circular_Mode.Disable;
 		xUSART_TX[usart_dma_instance_number].flow_control = DMA_Configuration.Flow_Control.DMA_Control;
 		xUSART_TX[usart_dma_instance_number].interrupts = DMA_Configuration.DMA_Interrupts.Transfer_Complete;
-		xUSART_TX[usart_dma_instance_number].ISR_Routines.Full_Transfer_Commplete_ISR = USART1_TX_ISR;
 		xUSART_TX[usart_dma_instance_number].memory_data_size = DMA_Configuration.Memory_Data_Size.byte;
 		xUSART_TX[usart_dma_instance_number].peripheral_data_size = DMA_Configuration.Peripheral_Data_Size.byte;
 		xUSART_TX[usart_dma_instance_number].peripheral_pointer_increment = DMA_Configuration.Peripheral_Pointer_Increment.Disable;
@@ -766,7 +794,7 @@ int8_t USART_TX_Buffer(USART_Config *config, uint8_t *tx_buffer, uint16_t length
 		xUSART_TX[usart_dma_instance_number].buffer_length = length;
 		DMA_Set_Target(&xUSART_TX[usart_dma_instance_number]);
 		DMA_Set_Trigger(&xUSART_TX[usart_dma_instance_number]);
-
+		config -> Port  -> CR3 |= USART_CR3_DMAT;
 
 		if(config->Port == USART1)
 		{
@@ -896,6 +924,6 @@ uint16_t USART_RX_Single_Byte(USART_Config *config)
 
 void USART_Clear_Status_Regs(USART_Config *config)
 {
-    (void)config->Port->SR; // Read the status register to clear flags
-    (void)config->Port->DR; // Read the data register to clear flags
+	(void)config->Port->SR; // Read the status register to clear flags
+	(void)config->Port->DR; // Read the data register to clear flags
 }
