@@ -26,7 +26,7 @@ int main(void)
 {
 	MCU_Clock_Setup();
 	Delay_Config();
-	Console_Init(9600);
+	Console_Init(115200);
 
 
 
@@ -34,6 +34,6 @@ int main(void)
 	for(;;)
 	{
 		printConsole("Hello \r\n");
-		Delay_s(1);
+		Delay_milli(750);
 	}
 }

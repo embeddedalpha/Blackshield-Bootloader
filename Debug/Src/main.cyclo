@@ -3,5 +3,5 @@
 ../Inc/main.h:51:22:MCU_Clock_Setup	4
 ../Inc/main.h:115:26:Delay_Config	1
 ../Inc/main.h:140:26:Delay_ms	2
-../Inc/main.h:161:26:Delay_s	2
+../Inc/main.h:151:26:Delay_milli	2
 ../Src/main.c:25:5:main	1
