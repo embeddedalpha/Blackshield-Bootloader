@@ -1,0 +1,5 @@
+../Inc/main.h:131:26:Delay_us	2
+../Drivers/CRC/CRC.c:11:6:CRC_Init	1
+../Drivers/CRC/CRC.c:16:6:CRC_Reset	1
+../Drivers/CRC/CRC.c:21:10:CRC_Compute_Single_Word	1
+../Drivers/CRC/CRC.c:28:10:CRC_Compute_8Bit_Block	2

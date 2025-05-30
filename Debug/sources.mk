@@ -23,6 +23,7 @@ C_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 Drivers/CAN \
+Drivers/CRC \
 Drivers/Console \
 Drivers/DMA \
 Drivers/GPIO \

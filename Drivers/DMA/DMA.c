@@ -111,7 +111,7 @@ void DMA1_Stream0_IRQHandler(void)
 		{
 			if (__DMA1_Stream0_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 			{
-				__DMA1_Stream0_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+				__DMA1_Stream0_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 				DMA1 -> LIFCR |= DMA_LIFCR_CTCIF0;
 
 				if(__DMA1_Stream0_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -201,7 +201,7 @@ void DMA1_Stream1_IRQHandler(void)
 		{
 			if (__DMA1_Stream1_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 			{
-				__DMA1_Stream1_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+				__DMA1_Stream1_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 				DMA1 -> LIFCR |= DMA_LIFCR_CTCIF1;
 
 				if(__DMA1_Stream1_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -294,7 +294,7 @@ void DMA1_Stream2_IRQHandler(void)
 		{
 			if (__DMA1_Stream2_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 			{
-				__DMA1_Stream2_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+				__DMA1_Stream2_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 				DMA1 -> LIFCR |= DMA_LIFCR_CTCIF2;
 
 				if(__DMA1_Stream2_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -385,7 +385,7 @@ void DMA1_Stream3_IRQHandler(void)
 		{
 			if (__DMA1_Stream3_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 			{
-				__DMA1_Stream3_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+				__DMA1_Stream3_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 				DMA1 -> LIFCR |= DMA_LIFCR_CTCIF3;
 
 				if(__DMA1_Stream3_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -537,7 +537,7 @@ void DMA1_Stream5_IRQHandler(void)
 	{
 		if (__DMA1_Stream5_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA1_Stream5_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA1_Stream5_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA1 -> HIFCR |= DMA_HIFCR_CTCIF5;
 
 			if(__DMA1_Stream5_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -613,7 +613,7 @@ void DMA1_Stream6_IRQHandler(void)
 	{
 		if (__DMA1_Stream6_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA1_Stream6_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA1_Stream6_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA1 -> HIFCR |= DMA_HIFCR_CTCIF6;
 
 			if(__DMA1_Stream6_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -688,7 +688,7 @@ void DMA1_Stream7_IRQHandler(void)
 	{
 		if (__DMA1_Stream7_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA1_Stream7_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA1_Stream7_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA1 -> HIFCR |= DMA_HIFCR_CTCIF7;
 
 			if(__DMA1_Stream7_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -856,7 +856,7 @@ void DMA2_Stream1_IRQHandler(void)
 	{
 		if (__DMA2_Stream1_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA2_Stream1_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA2_Stream1_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA2 -> LIFCR |= DMA_LIFCR_CTCIF1;
 
 			if(__DMA2_Stream1_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -931,7 +931,7 @@ void DMA2_Stream2_IRQHandler(void)
 	{
 		if (__DMA2_Stream2_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA2_Stream2_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA2_Stream2_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA2 -> LIFCR |= DMA_LIFCR_CTCIF2;
 
 			if(__DMA2_Stream2_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -1095,7 +1095,7 @@ void DMA2_Stream4_IRQHandler(void)
 	{
 		if (__DMA2_Stream4_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA2_Stream4_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA2_Stream4_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA2 -> HIFCR |= DMA_HIFCR_CTCIF4;
 
 			if(__DMA2_Stream4_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -1172,7 +1172,7 @@ void DMA2_Stream5_IRQHandler(void)
 	{
 		if (__DMA2_Stream5_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA2_Stream5_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA2_Stream5_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA2 -> HIFCR |= DMA_HIFCR_CTCIF5;
 
 			if(__DMA2_Stream5_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -1248,7 +1248,7 @@ void DMA2_Stream6_IRQHandler(void)
 	{
 		if (__DMA2_Stream6_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA2_Stream6_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA2_Stream6_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA2 -> HIFCR |= DMA_HIFCR_CTCIF6;
 
 			if(__DMA2_Stream6_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )
@@ -1323,7 +1323,7 @@ void DMA2_Stream7_IRQHandler(void)
 	{
 		if (__DMA2_Stream7_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 		{
-			__DMA2_Stream7_Config__ ->ISR_Routines.Half_Transfer_Complete_ISR();
+			__DMA2_Stream7_Config__ ->ISR_Routines.Full_Transfer_Commplete_ISR();
 			DMA2 -> HIFCR |= DMA_HIFCR_CTCIF7;
 
 			if(__DMA2_Stream7_Config__->double_buffer_mode == DMA_Configuration.Double_Buffer_Mode.Enable )

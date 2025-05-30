@@ -1,4 +1,5 @@
 "./Drivers/CAN/CAN.o"
+"./Drivers/CRC/CRC.o"
 "./Drivers/Console/Console.o"
 "./Drivers/DMA/DMA.o"
 "./Drivers/GPIO/GPIO.o"

@@ -19,6 +19,8 @@
 #include <stdint.h>
 #include "main.h"
 #include "Console/Console.h"
+#include "CRC/CRC.h"
+
 
 
 
@@ -27,13 +29,40 @@ int main(void)
 	MCU_Clock_Setup();
 	Delay_Config();
 	Console_Init(115200);
+	CRC_Init();
 
 
 
-    /* Loop forever */
+	uint32_t finalCRC[2] = {0};
+	uint8_t buffer[10];
+	char buffer1[] = "Kunal";
+
+
+
+
+	finalCRC[1] = CRC_Compute_8Bit_Block(buffer1, 5);
+
+	for(int i  = 0; i < 5; i++)
+	{
+		buffer[i] = buffer1[i];
+	}
+
+	for(int i = 0; i < 4; i++)
+	{
+		buffer[i+5] = finalCRC[1] >> (8 * (3-i));
+	}
+
+
+
 	for(;;)
 	{
-		printConsole("Hello \r\n");
+		printConsole("Value of your CRC = 0x%x \r\n",finalCRC[1]);
+		printConsole("Final Packet: ");
+		for(int i = 0; i < 10; i++)
+		{
+			printConsole("0x%x,",buffer[i]);
+		}
+		printConsole("\r\n");
 		Delay_milli(750);
 	}
 }

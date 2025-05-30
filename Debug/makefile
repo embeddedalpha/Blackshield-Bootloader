@@ -15,6 +15,7 @@ RM := rm -rf
 -include Drivers/GPIO/subdir.mk
 -include Drivers/DMA/subdir.mk
 -include Drivers/Console/subdir.mk
+-include Drivers/CRC/subdir.mk
 -include Drivers/CAN/subdir.mk
 -include objects.mk
 

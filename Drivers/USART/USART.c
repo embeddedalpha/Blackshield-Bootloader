@@ -576,12 +576,8 @@ int8_t USART_Init(USART_Config *config)
 
 	}
 
-
-
-
 	config->Port->BRR = (mantissa_1<<4)|(div_frac_1);
 	config->Port->CR1 |= config->parity ;
-	//	config->Port->CR1 |= USART_CR1_OVER8 ;
 
 	if(config -> interrupt == USART_Configuration.Interrupt_Type.Disable)
 	{
@@ -659,7 +655,7 @@ int8_t USART_Init(USART_Config *config)
 
 	if((config->dma_enable & USART_Configuration.DMA_Enable.RX_Enable) == USART_Configuration.DMA_Enable.RX_Enable)
 	{
-		config -> Port -> CR3 |= USART_CR3_DMAR;
+
 
 		if(config->Port == USART1)
 		{
@@ -861,6 +857,8 @@ int8_t USART_RX_Buffer(USART_Config *config, uint8_t *rx_buffer, uint16_t length
 		xUSART_RX[usart_dma_instance_number].buffer_length = length;
 		DMA_Set_Target(&xUSART_RX[usart_dma_instance_number]);
 		DMA_Set_Trigger(&xUSART_RX[usart_dma_instance_number]);
+		config -> Port -> CR3 |= USART_CR3_DMAR;
+
 
 		if(config->Port == USART1)
 		{
