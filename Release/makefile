@@ -13,6 +13,7 @@ RM := rm -rf
 -include Src/subdir.mk
 -include Drivers/USART/subdir.mk
 -include Drivers/GPIO/subdir.mk
+-include Drivers/FLASH/subdir.mk
 -include Drivers/DMA/subdir.mk
 -include Drivers/Console/subdir.mk
 -include Drivers/CRC/subdir.mk

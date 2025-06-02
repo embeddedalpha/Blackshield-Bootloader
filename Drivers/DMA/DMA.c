@@ -290,7 +290,7 @@ void DMA1_Stream2_IRQHandler(void)
 
 	if(DMA_LISR & DMA_LISR_TCIF2)
 	{
-		if(__DMA1_Stream2_Config__->interrupts & DMA_Configuration.DMA_Interrupts.Half_Transfer_Complete)
+		if(__DMA1_Stream2_Config__->interrupts & DMA_Configuration.DMA_Interrupts.Transfer_Complete)
 		{
 			if (__DMA1_Stream2_Config__ -> ISR_Routines.Full_Transfer_Commplete_ISR)
 			{

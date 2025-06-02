@@ -21,8 +21,47 @@
 #include "Console/Console.h"
 #include "CRC/CRC.h"
 
+/*
+			printConsole("1. Download new firmware \r\n");
+			printConsole("2. Read Firmware\r\n");
+			printConsole("3. Erase Firmware \r\n");
+			printConsole("4. Get Firmware Version \r\n");
+			printConsole("5. Get Product ID \r\n");
+			printConsole("6. Get Product Version \r\n");
+			printConsole("7. Get Application Version \r\n");
+			printConsole("8. Reboot MCU \r\n");
+ */
 
+typedef enum Menu{
+	Main_Menu,
+	Write_Firmware,
+	Read_Firmware,
+	Erase_Firmware,
+	Get_Firmware_Version,
+	Get_Product_ID,
+	Get_Product_Version,
+	Read_Application_Version,
+	Reboot_MCU,
 
+} Menu;
+
+typedef enum Comm_Response{
+	Invalid_Command,
+	Valid_Command,
+
+	Write_Successful,
+	Write_Unsuccessful,
+	Write_CRC_Error,
+
+	Read_Successful,
+	Read_Unuccessful,
+
+	Erase_Successful,
+	Erase_Unsuccessful,
+} Comm_Response;
+
+Menu Current_State = Main_Menu;
+Comm_Response Response = Invalid_Command;
 
 int main(void)
 {
@@ -33,36 +72,116 @@ int main(void)
 
 
 
-	uint32_t finalCRC[2] = {0};
-	uint8_t buffer[10];
-	char buffer1[] = "Kunal";
-
-
-
-
-	finalCRC[1] = CRC_Compute_8Bit_Block(buffer1, 5);
-
-	for(int i  = 0; i < 5; i++)
-	{
-		buffer[i] = buffer1[i];
-	}
-
-	for(int i = 0; i < 4; i++)
-	{
-		buffer[i+5] = finalCRC[1] >> (8 * (3-i));
-	}
-
-
-
 	for(;;)
 	{
-		printConsole("Value of your CRC = 0x%x \r\n",finalCRC[1]);
-		printConsole("Final Packet: ");
-		for(int i = 0; i < 10; i++)
+
+		switch (Current_State)
 		{
-			printConsole("0x%x,",buffer[i]);
+		case Main_Menu:
+		{
+			char input;
+			printConsole("===============================================================\r\n");
+			printConsole("                         Bootloader \r\n");
+			printConsole("===============================================================\r\n");
+			printConsole("Select an option \r\n");
+			printConsole("1. Download new firmware \r\n");
+			printConsole("2. Read Firmware\r\n");
+			printConsole("3. Erase Firmware \r\n");
+			printConsole("4. Get Firmware Version \r\n");
+			printConsole("5. Get Product ID \r\n");
+			printConsole("6. Get Product Version \r\n");
+			printConsole("7. Get Application Version \r\n");
+			printConsole("8. Reboot MCU \r\n");
+			printConsole("===============================================================\r\n");
+			printConsole("Enter choice [1-8]\r\n");
+			readConsole("%c", &input);
+
+			if (input == '1') {
+				Current_State = Write_Firmware;
+				printConsole("\r\n");
+			} else if (input == '2') {
+				Current_State = Read_Firmware;
+				printConsole("\r\n");
+			} else if (input == '2') {
+				Current_State = Erase_Firmware;
+				printConsole("\r\n");
+			}else if (input == '3') {
+				Current_State = Get_Firmware_Version;
+				printConsole("\r\n");
+			}else if (input == '4') {
+				Current_State = Get_Product_ID;
+				printConsole("\r\n");
+			}else if (input == '5') {
+				Current_State = Get_Product_Version;
+				printConsole("\r\n");
+			}else if (input == '6') {
+				Current_State = Read_Application_Version;
+				printConsole("\r\n");
+			}else if (input == '7') {
+				Current_State = Reboot_MCU;
+				printConsole("\r\n");
+			}
+			else {
+				printConsole("Invalid choice. Try again.\r\n");
+			}
+		}break;
+
+		case(Write_Firmware):
+		{
+			printConsole("Write Firmware \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+		case(Read_Firmware):
+		{
+			printConsole("Read Firmware \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+		case(Erase_Firmware):
+		{
+			printConsole("Erase Firmware \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+		case(Get_Firmware_Version):
+		{
+			printConsole("Get Firmware Version \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+		case(Get_Product_ID):
+		{
+			printConsole("Get Product ID \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+		case(Get_Product_Version):
+		{
+			printConsole("Get Product Version \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+		case(Read_Application_Version):
+		{
+			printConsole("Read Application Version \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+		case(Reboot_MCU):
+		{
+			printConsole("Reboot MCU \r\n");
+			Current_State = Main_Menu;
+		}break;
+
+
 		}
-		printConsole("\r\n");
-		Delay_milli(750);
+
 	}
+}
+
+void Download_Firmware(void)
+{
+
+
 }

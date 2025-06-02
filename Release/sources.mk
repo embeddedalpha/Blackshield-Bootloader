@@ -28,6 +28,7 @@ Drivers/CAN \
 Drivers/CRC \
 Drivers/Console \
 Drivers/DMA \
+Drivers/FLASH \
 Drivers/GPIO \
 Drivers/USART \
 Src \

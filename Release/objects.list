@@ -2,6 +2,7 @@
 "./Drivers/CRC/CRC.o"
 "./Drivers/Console/Console.o"
 "./Drivers/DMA/DMA.o"
+"./Drivers/FLASH/Flash.o"
 "./Drivers/GPIO/GPIO.o"
 "./Drivers/USART/USART.o"
 "./Src/main.o"
