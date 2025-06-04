@@ -1,4 +1,5 @@
 #include "Console.h"
+#include "CRC/CRC.h"
 
 // Flags to control and monitor UART reception
 volatile int rx_get_flag = 0; // Indicates if the reception is active
@@ -8,7 +9,7 @@ volatile int rx_flag = 0;     // Indicates if data reception is complete
 
 // Variables to track the length of received data and the reception buffer
 volatile int RX_Length = 0;
-volatile char TRX_Buffer[RX_Buffer_Length]; // Buffer for received and transmitted data
+volatile uint8_t TRX_Buffer[RX_Buffer_Length]; // Buffer for received and transmitted data
 
 // USART configuration structure
 USART_Config serial;
@@ -50,8 +51,7 @@ USART_Config serial;
 //    }
 //}
 
-void Console_IRQ(void)
-{
+void Console_IRQ(void){
     if (rx_get_flag == 1) { // Check if reception is active
         (void)UART4->SR; // Read the status register to clear flags
         (void)UART4->DR; // Read the data register to clear flags
@@ -166,7 +166,7 @@ void Console_Init(int32_t baudrate) {
   * @return Number of successfully parsed items or -1 in case of an error.
   */
  int readConsole(const char *msg, ...) {
-     va_list args;
+//     va_list args;
      int result;
 
      rx_get_flag = 1; // Enable reception
@@ -187,17 +187,39 @@ void Console_Init(int32_t baudrate) {
          return -1;
      }
 
-     // Null-terminate the received string
-     TRX_Buffer[RX_Length - 1] = '\0';
+     if(TRX_Buffer[0] != 0xAA) return -1;
+     if(TRX_Buffer[1] != 0x55) return -1;
+     if(TRX_Buffer[RX_Length-2] != 0xBB) return -1;
+     if(TRX_Buffer[RX_Length-1] != 0x66) return -1;
 
-     // Parse the input using the format string
-     va_start(args, msg);
-     result = vsscanf((char *)TRX_Buffer, msg, args);
-     va_end(args);
 
-     // Reset reception flags
-     rx_get_flag = 0;
-     rx_flag = 0;
+     uint32_t CRC_Rec1 = ((uint32_t)TRX_Buffer[RX_Length-6] << 24) |
+    		             ((uint32_t)TRX_Buffer[RX_Length-5] << 16) |
+						 ((uint32_t)TRX_Buffer[RX_Length-4] << 8) |
+						 ((uint32_t)TRX_Buffer[RX_Length-3] << 0) ;
+
+//     uint8_t Payload[200];
+//
+//     Payload[0] = TRX_Buffer[2];
+//     Payload[1] = TRX_Buffer[3];
+
+     uint32_t CRC_Rec2 = CRC_Compute_8Bit_Block(&TRX_Buffer[2], RX_Length-8);
+
+
+
+
+
+//     // Null-terminate the received string
+//     TRX_Buffer[RX_Length - 1] = '\0';
+//
+//     // Parse the input using the format string
+//     va_start(args, msg);
+//     result = vsscanf((char *)TRX_Buffer, msg, args);
+//     va_end(args);
+//
+//     // Reset reception flags
+//     rx_get_flag = 0;
+//     rx_flag = 0;
 
      return result;
  }

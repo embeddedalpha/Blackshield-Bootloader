@@ -17,5 +17,5 @@ void CRC_Init(void);
 void CRC_Reset(void);
 uint32_t CRC_Compute_Single_Word(uint32_t word);
 uint32_t CRC_Compute_8Bit_Block(uint8_t *wordBlock, size_t length);
-
+uint32_t CRC_Compute_32Bit_Block(uint32_t *wordBlock, size_t length);
 #endif /* CRC_CRC_H_ */
