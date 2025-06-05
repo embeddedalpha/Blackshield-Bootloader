@@ -62,7 +62,12 @@ void Custom_Comm_Init(int32_t baudrate) {
 }
 
 
-void Custom_Comm_Send(uint32_t *buffer, size_t buffer_size) {
+void Custom_Comm_Send(uint8_t *buffer, size_t buffer_size) {
+
+	if(buffer_size == 1)
+	{
+		USART_TX_Single_Byte(&Custom_Comm, buffer[0]);
+	}
 
 	// Transmit the buffer using DMA
 	USART_TX_Buffer(&Custom_Comm, (uint8_t *)&buffer[0], buffer_size);
@@ -92,43 +97,13 @@ uint16_t Custom_Comm_Receive(uint8_t *buffer)
 		return -1;
 	}
 
-	if(Custom_TRX_Buffer[0] != 0xAA) return -1;
-	if(Custom_TRX_Buffer[1] != 0x55) return -1;
-	if(Custom_TRX_Buffer[Custom_RX_Length-2] != 0xBB) return -1;
-	if(Custom_TRX_Buffer[Custom_RX_Length-1] != 0x66) return -1;
+	result = Custom_RX_Length;
 
 
-	uint32_t CRC_Rec1 = ((uint32_t)Custom_TRX_Buffer[Custom_RX_Length-6] << 24) |
-			((uint32_t)Custom_TRX_Buffer[Custom_RX_Length-5] << 16) |
-			((uint32_t)Custom_TRX_Buffer[Custom_RX_Length-4] << 8) |
-			((uint32_t)Custom_TRX_Buffer[Custom_RX_Length-3] << 0) ;
+	DMA_Memory_To_Memory_Transfer(Custom_TRX_Buffer, 8, 8, buffer, 1, 1, Custom_RX_Length);
 
-	uint32_t CRC_Rec2 = CRC_Compute_8Bit_Block(&Custom_TRX_Buffer[2], Custom_RX_Length-8);
-
-	if(CRC_Rec1 == CRC_Rec2)
-	{
-		if((Custom_TRX_Buffer[2] == 0x3B) && (Custom_TRX_Buffer[3] == 0x01))
-		{
-			Custom_TRX_Buffer[0] = 0x02;
-//			CRC_Rec1 = CRC_Compute_8Bit_Block(&Custom_TRX_Buffer[2], Custom_RX_Length-8);
-//			Custom_TRX_Buffer[Custom_RX_Length-6] = (CRC_Rec1 & 0xFF000000) >> 24;
-//			Custom_TRX_Buffer[Custom_RX_Length-5] = (CRC_Rec1 & 0x00FF0000) >> 16;
-//			Custom_TRX_Buffer[Custom_RX_Length-4] = (CRC_Rec1 & 0x0000FF00) >> 8;
-//			Custom_TRX_Buffer[Custom_RX_Length-3] = (CRC_Rec1 & 0x000000FF) >> 0;
-			Custom_Comm_Send(Custom_TRX_Buffer, 1);
-		}
-
-		if((Custom_TRX_Buffer[2] == 0x3A) && (Custom_TRX_Buffer[3] == 0x01))
-		{
-			Custom_TRX_Buffer[0] = 0x02;
-			CRC_Rec1 = CRC_Compute_8Bit_Block(&Custom_TRX_Buffer[2], Custom_RX_Length-8);
-			Custom_TRX_Buffer[Custom_RX_Length-6] = (CRC_Rec1 & 0xFF000000) >> 24;
-			Custom_TRX_Buffer[Custom_RX_Length-5] = (CRC_Rec1 & 0x00FF0000) >> 16;
-			Custom_TRX_Buffer[Custom_RX_Length-4] = (CRC_Rec1 & 0x0000FF00) >> 8;
-			Custom_TRX_Buffer[Custom_RX_Length-3] = (CRC_Rec1 & 0x000000FF) >> 0;
-			Custom_Comm_Send(Custom_TRX_Buffer, 1);
-		}
-	}
+	custom_rx_get_flag = 0; // Indicates if the reception is active
+	custom_rx_flag = 0;
 
 
 	return result;

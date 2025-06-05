@@ -14,7 +14,7 @@
 #include "DMA/DMA.h"
 
 void Custom_Comm_Init(int32_t baudrate);
-void Custom_Comm_Send(uint32_t *buffer, size_t buffer_size);
+void Custom_Comm_Send(uint8_t *buffer, size_t buffer_size);
 uint16_t Custom_Comm_Receive(uint8_t *buffer);
 
 

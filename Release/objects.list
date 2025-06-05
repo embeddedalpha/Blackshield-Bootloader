@@ -1,6 +1,7 @@
 "./Drivers/CAN/CAN.o"
 "./Drivers/CRC/CRC.o"
 "./Drivers/Console/Console.o"
+"./Drivers/Custom_RS485_Comm/Custom_RS485_Comm.o"
 "./Drivers/DMA/DMA.o"
 "./Drivers/FLASH/Flash.o"
 "./Drivers/GPIO/GPIO.o"

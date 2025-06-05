@@ -23,173 +23,55 @@
 #include "Custom_RS485_Comm/Custom_RS485_Comm.h"
 
 
-
-
+uint8_t buffer1[3] = {0,0,0};
+uint8_t buffer[256];
 
 void Download_Firmware(void);
 
-typedef enum Menu{
-	Main_Menu,
-	Write_Firmware,
-	Read_Firmware,
-	Erase_Firmware,
-	Get_Firmware_Version,
-	Get_Product_ID,
-	Get_Product_Version,
-	Read_Application_Version,
-	Reboot_MCU,
 
-} Menu;
+typedef enum _Commands_Typedef_{
+	Connect_Device =             0xA1,
+	Disconnect_Device =          0xA2,
+	Fetch_Info =                 0xA3,
+	Write_Firmware =             0xA4,
+	Read_Firmware =              0xA5,
+	Erase_Firmware =             0xA6,
+	Reboot_MCU =                 0xA7
+}Commands;
 
-typedef enum Comm_Response{
-	Invalid_Command,
-	Valid_Command,
+typedef enum _Request_List_{
 
-	Write_Successful,
-	Write_Unsuccessful,
-	Write_CRC_Error,
+	Req_Request     = 0x01,
+	Req_ACK  		= 0x02,
 
-	Read_Successful,
-	Read_Unuccessful,
+}Request_List;
 
-	Erase_Successful,
-	Erase_Unsuccessful,
-} Comm_Response;
+Commands Command_RX;
+Request_List Req_RX;
 
-Menu Current_State = Main_Menu;
-Comm_Response Response = Invalid_Command;
+
+void Configuration_App();
+void Bootloader(void);
+void Application();
 
 int main(void)
 {
 	MCU_Clock_Setup();
 	Delay_Config();
-//	Console_Init(115200);
-
 	CRC_Init();
-//
-//	uint8_t packet[] = {0x3a, 0x01};
-//	uint32_t CRC_Calc1[3] = {0,0,0};
-//
-//	CRC_Calc1[2] = CRC_Compute_8Bit_Block(packet, 2);
-//
-//	uint8_t buffer[10];
-//	readConsole("%d",&buffer);
 
+	GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None, GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
 
-	Custom_Comm_Init(115200);
-
-	uint8_t buffer[10];
-	uint16_t len = Custom_Comm_Receive(buffer);
-
-
-
-
-	for(;;)
+	if((GPIOC -> IDR & GPIO_IDR_ID0) == true)
 	{
-
-		//		switch (Current_State){
-		//		case Main_Menu:
-		//		{
-		//			char input;
-		//			printConsole("===============================================================\r\n");
-		//			printConsole("                         Bootloader \r\n");
-		//			printConsole("===============================================================\r\n");
-		//			printConsole("Select an option \r\n");
-		//			printConsole("1. Download new firmware \r\n");
-		//			printConsole("2. Read Firmware\r\n");
-		//			printConsole("3. Erase Firmware \r\n");
-		//			printConsole("4. Get Firmware Version \r\n");
-		//			printConsole("5. Get Product ID \r\n");
-		//			printConsole("6. Get Product Version \r\n");
-		//			printConsole("7. Get Application Version \r\n");
-		//			printConsole("8. Reboot MCU \r\n");
-		//			printConsole("===============================================================\r\n");
-		//			printConsole("Enter choice [1-8]\r\n");
-		//			readConsole("%c", &input);
-		//
-		//			if (input == '1') {
-		//				Current_State = Write_Firmware;
-		//				printConsole("\r\n");
-		//			} else if (input == '2') {
-		//				Current_State = Read_Firmware;
-		//				printConsole("\r\n");
-		//			} else if (input == '2') {
-		//				Current_State = Erase_Firmware;
-		//				printConsole("\r\n");
-		//			}else if (input == '3') {
-		//				Current_State = Get_Firmware_Version;
-		//				printConsole("\r\n");
-		//			}else if (input == '4') {
-		//				Current_State = Get_Product_ID;
-		//				printConsole("\r\n");
-		//			}else if (input == '5') {
-		//				Current_State = Get_Product_Version;
-		//				printConsole("\r\n");
-		//			}else if (input == '6') {
-		//				Current_State = Read_Application_Version;
-		//				printConsole("\r\n");
-		//			}else if (input == '7') {
-		//				Current_State = Reboot_MCU;
-		//				printConsole("\r\n");
-		//			}
-		//			else {
-		//				printConsole("Invalid choice. Try again.\r\n");
-		//			}
-		//		}break;
-		//
-		//		case(Write_Firmware):
-		//		{
-		//			printConsole("Write Firmware \r\n");
-		//			Download_Firmware();
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//		case(Read_Firmware):
-		//		{
-		//			printConsole("Read Firmware \r\n");
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//		case(Erase_Firmware):
-		//		{
-		//			printConsole("Erase Firmware \r\n");
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//		case(Get_Firmware_Version):
-		//		{
-		//			printConsole("Get Firmware Version \r\n");
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//		case(Get_Product_ID):
-		//		{
-		//			printConsole("Get Product ID \r\n");
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//		case(Get_Product_Version):
-		//		{
-		//			printConsole("Get Product Version \r\n");
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//		case(Read_Application_Version):
-		//		{
-		//			printConsole("Read Application Version \r\n");
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//		case(Reboot_MCU):
-		//		{
-		//			printConsole("Reboot MCU \r\n");
-		//			Current_State = Main_Menu;
-		//		}break;
-		//
-		//
-		//		}
-
+		Custom_Comm_Init(115200);
+		Bootloader();
 	}
+	else
+	{
+		Application();
+	}
+
 }
 
 void Download_Firmware(void)
@@ -206,5 +88,78 @@ void Download_Firmware(void)
 	// 1. Send start signal [0xAA][0x55]{[]}[Checksum][0xBB][0xCC]
 	// 2. Wait till we receive ACK for this command
 
+
+}
+
+void Bootloader(void)
+{
+	while(1)
+	{
+		uint16_t len = Custom_Comm_Receive(buffer);
+		if(buffer[0] == 0xAA && buffer[1] == 0x55)
+		{
+			if(buffer[0] == 0xAA && buffer[1] == 0x55)
+			{
+				if(buffer[len-2] == 0xBB && buffer[len-1] == 0x66)
+				{
+					uint32_t CRC_Rec1 = (((uint32_t)buffer[len-6] << 24) | ((uint32_t)buffer[len-5] << 16) | ((uint32_t)buffer[len-4] << 8) | ((uint32_t)buffer[len-3] << 0)) ;
+					uint32_t CRC_Rec2 = CRC_Compute_8Bit_Block(&buffer[2], len-8);
+					if(CRC_Rec1 == CRC_Rec2)
+					{
+						Command_RX = buffer[2];
+						Req_RX = buffer[3];
+						switch (Command_RX)
+						{
+							case Connect_Device:
+							{
+
+							}
+							break;
+
+							case Disconnect_Device:
+							{
+
+							}
+							break;
+
+							case Fetch_Info:
+							{
+
+							}
+							break;
+
+							case Write_Firmware:
+							{
+								Download_Firmware();
+							}
+							break;
+
+							case Read_Firmware:
+							{
+
+							}
+							break;
+
+							case Erase_Firmware:
+							{
+
+							}
+							break;
+
+							case Reboot_MCU:
+							{
+
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void Application()
+{
 
 }

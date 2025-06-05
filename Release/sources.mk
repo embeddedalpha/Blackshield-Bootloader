@@ -27,6 +27,7 @@ SUBDIRS := \
 Drivers/CAN \
 Drivers/CRC \
 Drivers/Console \
+Drivers/Custom_RS485_Comm \
 Drivers/DMA \
 Drivers/FLASH \
 Drivers/GPIO \

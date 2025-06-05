@@ -166,7 +166,7 @@ void Console_Init(int32_t baudrate) {
   * @return Number of successfully parsed items or -1 in case of an error.
   */
  int readConsole(const char *msg, ...) {
-//     va_list args;
+     va_list args;
      int result;
 
      rx_get_flag = 1; // Enable reception
@@ -187,39 +187,17 @@ void Console_Init(int32_t baudrate) {
          return -1;
      }
 
-     if(TRX_Buffer[0] != 0xAA) return -1;
-     if(TRX_Buffer[1] != 0x55) return -1;
-     if(TRX_Buffer[RX_Length-2] != 0xBB) return -1;
-     if(TRX_Buffer[RX_Length-1] != 0x66) return -1;
+     // Null-terminate the received string
+     TRX_Buffer[RX_Length - 1] = '\0';
 
+     // Parse the input using the format string
+     va_start(args, msg);
+     result = vsscanf((char *)TRX_Buffer, msg, args);
+     va_end(args);
 
-     uint32_t CRC_Rec1 = ((uint32_t)TRX_Buffer[RX_Length-6] << 24) |
-    		             ((uint32_t)TRX_Buffer[RX_Length-5] << 16) |
-						 ((uint32_t)TRX_Buffer[RX_Length-4] << 8) |
-						 ((uint32_t)TRX_Buffer[RX_Length-3] << 0) ;
-
-//     uint8_t Payload[200];
-//
-//     Payload[0] = TRX_Buffer[2];
-//     Payload[1] = TRX_Buffer[3];
-
-     uint32_t CRC_Rec2 = CRC_Compute_8Bit_Block(&TRX_Buffer[2], RX_Length-8);
-
-
-
-
-
-//     // Null-terminate the received string
-//     TRX_Buffer[RX_Length - 1] = '\0';
-//
-//     // Parse the input using the format string
-//     va_start(args, msg);
-//     result = vsscanf((char *)TRX_Buffer, msg, args);
-//     va_end(args);
-//
-//     // Reset reception flags
-//     rx_get_flag = 0;
-//     rx_flag = 0;
+     // Reset reception flags
+     rx_get_flag = 0;
+     rx_flag = 0;
 
      return result;
  }
