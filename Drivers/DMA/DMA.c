@@ -1675,9 +1675,14 @@ void DMA_Set_Trigger(DMA_Config *config)
  * @param[in] destination_increment If true, the destination address will be incremented after each transfer.
  * @param[in] length Number of data items to transfer.
  */
-void DMA_Memory_To_Memory_Transfer(void *source,
-		uint8_t source_data_size, uint8_t dest_data_size,
-		void *destination, bool source_increment,
+//void DMA_Memory_To_Memory_Transfer(volatile void *source,
+//		uint8_t source_data_size, uint8_t dest_data_size,
+//		volatile void *destination, bool source_increment,
+//		bool destination_increment, uint16_t length)
+
+void DMA_Memory_To_Memory_Transfer(volatile void *source,
+		uint8_t source_data_size, bool source_increment,
+		volatile void *destination, uint8_t dest_data_size,
 		bool destination_increment, uint16_t length)
 {
 	// Enable DMA2 clock
@@ -1739,6 +1744,8 @@ void DMA_Memory_To_Memory_Transfer(void *source,
 	{
 		DMA2_Stream0->CR &= ~DMA_SxCR_MINC;
 	}
+
+	DMA2_Stream0->FCR |= DMA_SxFCR_DMDIS;
 
 	// Set the peripheral address (source)
 	DMA2_Stream0->PAR = (uint32_t)(source);

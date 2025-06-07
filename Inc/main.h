@@ -89,6 +89,17 @@ __STATIC_INLINE void MCU_Clock_Setup(void)
 	RCC -> APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 }
 
+__STATIC_INLINE void MCU_Clock_DeInit(void)
+{
+	RCC -> CFGR &= ~RCC_CFGR_SW_PLL;
+	while((RCC->CR & RCC_CR_PLLRDY)){}
+	RCC->PLLCFGR = 0x00000000;
+	RCC -> CFGR = 0x00000000;
+	RCC -> CR &= ~RCC_CR_HSEON;
+	while((RCC -> CR & RCC_CR_HSERDY)){}
+
+
+}
 
 __STATIC_INLINE int I2S_Clock_Init()
 {
@@ -244,6 +255,21 @@ __STATIC_INLINE int Log_Scan(int buffer_length, char * msg, ...)
     return result;  // Return the number of successful conversions
 }
 
+__STATIC_INLINE void System_DeInit(void)
+{
+	RCC -> AHB1RSTR = 0xFFFFFFFF;
+	RCC -> AHB2RSTR = 0xFFFFFFFF;
+	RCC -> AHB3RSTR = 0xFFFFFFFF;
+	RCC -> APB1RSTR = 0xFFFFFFFF;
+	RCC -> APB2RSTR = 0xFFFFFFFF;
+}
+
+__STATIC_INLINE void Systick_DeInit(void)
+{
+	SysTick->CTRL = 0;//to turn off the systick
+	SysTick->LOAD = 0;
+	SysTick->VAL = 0;
+}
 
 typedef struct Time_Typedef
 {

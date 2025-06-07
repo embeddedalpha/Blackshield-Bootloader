@@ -2,9 +2,15 @@
 #include "CRC/CRC.h"
 #include "Custom_RS485_Comm/Custom_RS485_Comm.h"
 
+#define APP_ADDRESS      0x08008000U
+typedef void (*pFunction)(void);
+pFunction JumpToApplication;
+uint32_t JumpAddress;
 
-uint8_t buffer1[3] = {0,0,0};
-uint8_t buffer[256];
+
+
+volatile uint8_t  buffer1[3] = {0,0,0};
+volatile uint8_t  buffer[256];
 
 
 
@@ -46,14 +52,40 @@ int main(void)
 
 	GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None, GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
 
-	if((GPIOC -> IDR & GPIO_IDR_ID0) == true)
+	uint32_t data[10];
+
+
+	for(int i = 0; i < 8; i++)
 	{
-		Custom_Comm_Init(115200);
-		Bootloader();
+		buffer[i] = i;
 	}
-	else
+
+	CRC_Rec1= CRC_Compute_8Bit_Block(buffer, 8);
+
+
+	CRC_Reset();
+
+//	DMA_Memory_To_Memory_Transfer((uint32_t*)buffer, 8, 32, &CRC->DR, 1, 0, 2);
+
+	DMA_Memory_To_Memory_Transfer((uint32_t*)buffer, 8,1, &CRC->DR, 32, 0, 2);
+
+	CRC_Rec2 = CRC -> DR;
+
+
+
+//	if((GPIOC -> IDR & GPIO_IDR_ID0) == true)
+//	{
+//		Custom_Comm_Init(115200);
+//		Bootloader();
+//	}
+//	else
+//	{
+//		Application();
+//	}
+
+	while(1)
 	{
-		Application();
+
 	}
 
 }
@@ -85,41 +117,41 @@ void Bootloader(void)
 						Req_RX = buffer[3];
 						switch (Command_RX)
 						{
-							case Connect_Device:
-							{
-								Connect_Device_Func();
-							}
-							break;
+						case Connect_Device:
+						{
+							Connect_Device_Func();
+						}
+						break;
 
-							case Disconnect_Device:
-							{
-								Disconnect_Device_Func();
-							}
-							break;
+						case Disconnect_Device:
+						{
+							Disconnect_Device_Func();
+						}
+						break;
 
-							case Write_Firmware:
-							{
-								Write_Firmware_Func();
-							}
-							break;
+						case Write_Firmware:
+						{
+							Write_Firmware_Func();
+						}
+						break;
 
-							case Read_Firmware:
-							{
-								Read_Firmware_Func();
-							}
-							break;
+						case Read_Firmware:
+						{
+							Read_Firmware_Func();
+						}
+						break;
 
-							case Erase_Firmware:
-							{
-								Erase_Firmware_Func();
-							}
-							break;
+						case Erase_Firmware:
+						{
+							Erase_Firmware_Func();
+						}
+						break;
 
-							case Reboot_MCU:
-							{
-								Reboot_MCU_Func();
-							}
-							break;
+						case Reboot_MCU:
+						{
+							Reboot_MCU_Func();
+						}
+						break;
 						}
 					}
 				}
@@ -147,7 +179,9 @@ void Connect_Device_Func(void)
 	buffer[13] = 0xBB;
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
-	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
+
+//	DMA_Memory_To_Memory_Transfer(buffer1, 8,8, (uint8_t *)buffer, 0, 1, 256);
 }
 
 void Disconnect_Device_Func(void)
@@ -164,7 +198,7 @@ void Disconnect_Device_Func(void)
 	buffer[8] = 0xBB;
 	buffer[9] = 0x66;
 	Custom_Comm_Send(buffer, 10);
-	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
 }
 
 
@@ -185,7 +219,8 @@ void Write_Firmware_Func(void)
 	buffer[13] = 0xBB;
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
-	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
+//	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
 }
 
 void Read_Firmware_Func(void)
@@ -244,5 +279,28 @@ void Reboot_MCU_Func(void)
 
 void Application()
 {
+	// Perform CRC on Flash
 
+
+	System_DeInit();
+	MCU_Clock_DeInit();
+	Systick_DeInit();
+
+	__set_PRIMASK(1);
+	__disable_irq();
+	__DSB();
+	__ISB();
+
+	SCB->VTOR = APP_ADDRESS;
+	__set_MSP(*((__IO uint32_t*) APP_ADDRESS));
+
+	// 5. Set PC to application reset handler
+	JumpAddress = *(__IO uint32_t*) (APP_ADDRESS + 4);
+	JumpToApplication = (pFunction) JumpAddress;
+
+	// 6. Jump!
+	JumpToApplication();
+
+
+	while(1);
 }
