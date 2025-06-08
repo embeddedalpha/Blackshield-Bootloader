@@ -2,7 +2,7 @@
 ../Inc/core_cm4.h:1815:22:__NVIC_SetPriority	2
 ../Inc/main.h:41:25:SystemAPB1_Clock_Speed	1
 ../Inc/main.h:46:25:SystemAPB2_Clock_Speed	1
-../Inc/main.h:191:22:separateFractionAndIntegral	1
+../Inc/main.h:202:22:separateFractionAndIntegral	1
 ../Drivers/USART/USART.c:63:6:USART1_TX_ISR	1
 ../Drivers/USART/USART.c:67:6:USART1_RX_ISR	1
 ../Drivers/USART/USART.c:71:6:USART2_TX_ISR	1

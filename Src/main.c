@@ -8,6 +8,25 @@ pFunction JumpToApplication;
 uint32_t JumpAddress;
 
 
+#define LOCATE_APP_FUNC  __attribute__((section(".app_section")))
+
+
+void LOCATE_APP_FUNC Blink_App(void)
+{
+//	MCU_Clock_Setup();
+//	Delay_Config();
+	GPIO_Pin_Init(GPIOD, 12, GPIO_Configuration.Mode.General_Purpose_Output, GPIO_Configuration.Output_Type.Push_Pull, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
+
+	while(1)
+	{
+		GPIO_Pin_High(GPIOD, 12);
+		Delay_s(1);
+		GPIO_Pin_Low(GPIOD, 12);
+		Delay_s(1);
+	}
+
+}
+
 
 volatile uint8_t  buffer1[3] = {0,0,0};
 volatile uint8_t  buffer[256];
@@ -50,29 +69,15 @@ int main(void)
 	Delay_Config();
 	CRC_Init();
 
-	GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None, GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
-
-	uint32_t data[10];
-
-
-	for(int i = 0; i < 8; i++)
-	{
-		buffer[i] = i;
-	}
-
-	CRC_Rec1= CRC_Compute_8Bit_Block(buffer, 8);
-
-
-	CRC_Reset();
-
-//	DMA_Memory_To_Memory_Transfer((uint32_t*)buffer, 8, 32, &CRC->DR, 1, 0, 2);
-
-	DMA_Memory_To_Memory_Transfer((uint32_t*)buffer, 8,1, &CRC->DR, 32, 0, 2);
-
-	CRC_Rec2 = CRC -> DR;
+//	while(1)
+//	{
+		Blink_App();
+//	}
 
 
 
+//	GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None, GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
+//
 //	if((GPIOC -> IDR & GPIO_IDR_ID0) == true)
 //	{
 //		Custom_Comm_Init(115200);
@@ -82,11 +87,11 @@ int main(void)
 //	{
 //		Application();
 //	}
-
-	while(1)
-	{
-
-	}
+//
+//	while(1)
+//	{
+//
+//	}
 
 }
 
@@ -238,7 +243,8 @@ void Read_Firmware_Func(void)
 	buffer[13] = 0xBB;
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
-	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
+//	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
 }
 
 void Erase_Firmware_Func(void)
@@ -256,7 +262,8 @@ void Erase_Firmware_Func(void)
 	buffer[13] = 0xBB;
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
-	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
+//	DMA_Memory_To_Memory_Transfer(buffer1, 8,8, (uint8_t *)buffer, 0, 1, 256);
 }
 
 void Reboot_MCU_Func(void)
@@ -274,7 +281,7 @@ void Reboot_MCU_Func(void)
 	buffer[13] = 0xBB;
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
-	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
 }
 
 void Application()

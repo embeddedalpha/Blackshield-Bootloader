@@ -47,7 +47,8 @@ MEMORY
 {
   CCMRAM    (xrw)    : ORIGIN = 0x10000000,   LENGTH = 64K
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 1024K
+  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 992K
+  APP_MEMORY (rx)   : ORIGIN = 0x8008000,   LENGTH = 32K
 }
 
 /* Sections */
@@ -77,6 +78,18 @@ SECTIONS
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
   } >FLASH
+
+  /* 1) define .app_section at 4-byte alignment */
+  .app_section :
+  {
+  . = ALIGN(4);
+    __app_section_start__ = .;    /* save start address */
+    *(.app_section*)              /* pull in anything you’ve put in .app_section */
+    __app_section_end__   = .;    /* save end address */
+  } > APP_MEMORY                 /* place it in the APP_MEMORY region */
+
+  /* 2) now assert that its size <= the region length */
+
 
   /* Constant data into "FLASH" Rom type memory */
   .rodata :

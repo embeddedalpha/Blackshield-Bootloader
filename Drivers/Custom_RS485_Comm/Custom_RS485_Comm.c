@@ -99,8 +99,7 @@ uint16_t Custom_Comm_Receive(volatile uint8_t *buffer)
 
 	result = Custom_RX_Length;
 
-
-	DMA_Memory_To_Memory_Transfer(Custom_TRX_Buffer, 8, 8, buffer, 1, 1, Custom_RX_Length);
+	DMA_Memory_To_Memory_Transfer(Custom_TRX_Buffer, 8,1,  buffer, 8, 1, Custom_RX_Length);
 
 	custom_rx_get_flag = 0; // Indicates if the reception is active
 	custom_rx_flag = 0;

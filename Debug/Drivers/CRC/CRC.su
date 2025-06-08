@@ -1,5 +1,5 @@
-../Drivers/CRC/CRC.c:11:6:CRC_Init	4	static
-../Drivers/CRC/CRC.c:16:6:CRC_Reset	4	static
-../Drivers/CRC/CRC.c:21:10:CRC_Compute_Single_Word	16	static
-../Drivers/CRC/CRC.c:28:10:CRC_Compute_8Bit_Block	24	static
-../Drivers/CRC/CRC.c:41:10:CRC_Compute_32Bit_Block	24	static
+../Drivers/CRC/CRC.c:11:6:CRC_Init	0	static
+../Drivers/CRC/CRC.c:16:6:CRC_Reset	0	static
+../Drivers/CRC/CRC.c:21:10:CRC_Compute_Single_Word	8	static
+../Drivers/CRC/CRC.c:28:10:CRC_Compute_8Bit_Block	8	static
+../Drivers/CRC/CRC.c:41:10:CRC_Compute_32Bit_Block	8	static

@@ -29,7 +29,7 @@ Drivers/CRC \
 Drivers/Console \
 Drivers/Custom_RS485_Comm \
 Drivers/DMA \
-Drivers/FLASH \
+Drivers/Flash \
 Drivers/GPIO \
 Drivers/USART \
 Src \

@@ -1,4 +1,4 @@
-../Drivers/Custom_RS485_Comm/Custom_RS485_Comm.c:17:6:Custom_Console_IRQ	4	static,ignoring_inline_asm
+../Drivers/Custom_RS485_Comm/Custom_RS485_Comm.c:17:6:Custom_Console_IRQ	0	static,ignoring_inline_asm
 ../Drivers/Custom_RS485_Comm/Custom_RS485_Comm.c:46:6:Custom_Comm_Init	16	static
 ../Drivers/Custom_RS485_Comm/Custom_RS485_Comm.c:65:6:Custom_Comm_Send	16	static
 ../Drivers/Custom_RS485_Comm/Custom_RS485_Comm.c:78:10:Custom_Comm_Receive	40	static
