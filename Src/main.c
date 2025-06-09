@@ -69,9 +69,22 @@ int main(void)
 	Delay_Config();
 	CRC_Init();
 
+	GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None, GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
+
+	if((GPIOC -> IDR & GPIO_IDR_ID0) == true)
+	{
+		Custom_Comm_Init(115200);
+		Bootloader();
+	}
+	else
+	{
+//		Application();
+		Blink_App();
+	}
+
 //	while(1)
 //	{
-		Blink_App();
+//		Blink_App();
 //	}
 
 
