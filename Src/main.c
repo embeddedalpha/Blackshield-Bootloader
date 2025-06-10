@@ -73,8 +73,8 @@ int main(void)
 
 	if((GPIOC -> IDR & GPIO_IDR_ID0) == true)
 	{
-		Custom_Comm_Init(115200);
-		Bootloader();
+//		Custom_Comm_Init(115200);
+//		Bootloader();
 	}
 	else
 	{
