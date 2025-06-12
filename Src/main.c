@@ -185,7 +185,7 @@ void Connect_Device_Func(void)
 	buffer[2] = Connect_Device;
 	buffer[3] = Req_ACK;
 	buffer[4] = 0x01;
-	buffer[5] = 0x01;
+	buffer[5] = 0x19;
 	buffer[6] = 0x01;
 	buffer[7] = 0x01;
 	buffer[8] = 0x01;
@@ -217,6 +217,8 @@ void Disconnect_Device_Func(void)
 	buffer[9] = 0x66;
 	Custom_Comm_Send(buffer, 10);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
+
+
 }
 
 
@@ -238,7 +240,6 @@ void Write_Firmware_Func(void)
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
-//	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
 }
 
 void Read_Firmware_Func(void)
@@ -257,7 +258,6 @@ void Read_Firmware_Func(void)
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
-//	DMA_Memory_To_Memory_Transfer(buffer1, 8, 8, (uint8_t *)buffer, 0, 1, 256);
 }
 
 void Erase_Firmware_Func(void)
@@ -276,11 +276,11 @@ void Erase_Firmware_Func(void)
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
-//	DMA_Memory_To_Memory_Transfer(buffer1, 8,8, (uint8_t *)buffer, 0, 1, 256);
 }
 
 void Reboot_MCU_Func(void)
 {
+
 	buffer[0] = 0xAA;
 	buffer[1] = 0x55;
 	buffer[2] = Reboot_MCU;
@@ -295,6 +295,8 @@ void Reboot_MCU_Func(void)
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
+
+	NVIC_SystemReset();
 }
 
 void Application()
