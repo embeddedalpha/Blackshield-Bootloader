@@ -7,6 +7,8 @@ typedef void (*pFunction)(void);
 pFunction JumpToApplication;
 uint32_t JumpAddress;
 
+#define APP_SIZE_BYTES      (64 * 1024)   // 64KB
+#define APP_CRC_ADDRESS     0x08018000
 
 #define LOCATE_APP_FUNC  __attribute__((section(".app_section")))
 
@@ -79,7 +81,14 @@ int main(void)
 	else
 	{
 //		Application();
-		Blink_App();
+
+		//Validate Firmware:
+		uint32_t calculated_crc = calculate_crc(APP_ADDRESS, APP_SIZE_BYTES);
+		uint32_t stored_crc     = *((uint32_t*)APP_CRC_ADDRESS)
+
+		if (calculated_crc == stored_crc) {
+			Blink_App();
+		}
 	}
 
 //	while(1)
