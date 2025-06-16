@@ -51,7 +51,7 @@ uint32_t CRC_Compute_32Bit_Block(volatile uint32_t *wordBlock, size_t length)
 }
 
 
-uint32_t CRC_Compute_Flash_Data(volatile uint32_t *Flash_Address, size_t length)
+uint32_t CRC_Compute_Flash_Data(volatile uint32_t Flash_Address, size_t length)
 {
 	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
 

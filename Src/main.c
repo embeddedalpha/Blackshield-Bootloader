@@ -32,7 +32,7 @@ void LOCATE_APP_FUNC Blink_App(void)
 
 volatile uint8_t  buffer1[3] = {0,0,0};
 volatile uint8_t  buffer[256];
-
+uint16_t len = 0;
 
 
 
@@ -63,6 +63,7 @@ void Write_Firmware_Func(void);
 void Read_Firmware_Func(void);
 void Reboot_MCU_Func(void);
 void Erase_Firmware_Func(void);
+bool Validate_Command(uint16_t len, Commands command);
 /*==============================================================================================*/
 
 int main(void)
@@ -83,8 +84,8 @@ int main(void)
 //		Application();
 
 		//Validate Firmware:
-		uint32_t calculated_crc = calculate_crc(APP_ADDRESS, APP_SIZE_BYTES);
-		uint32_t stored_crc     = *((uint32_t*)APP_CRC_ADDRESS)
+		uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE_BYTES);
+		uint32_t stored_crc     = *((uint32_t*)APP_CRC_ADDRESS);
 
 		if (calculated_crc == stored_crc) {
 			Blink_App();
@@ -129,7 +130,37 @@ void Bootloader(void)
 {
 	while(1)
 	{
-		uint16_t len = Custom_Comm_Receive(buffer);
+		len = Custom_Comm_Receive(buffer);
+		if(Validate_Command(len, Connect_Device))
+		{
+			Connect_Device_Func();
+
+			while(1)
+			{
+				len = Custom_Comm_Receive(buffer);
+				if(Validate_Command(len, Write_Firmware))
+				{
+					Write_Firmware_Func();
+				}
+				else if(Validate_Command(len, Read_Firmware))
+				{
+
+				}
+				else if(Validate_Command(len, Erase_Firmware))
+				{
+
+				}
+				else if(Validate_Command(len, Reboot_MCU))
+				{
+
+				}
+				else if(Validate_Command(len, Disconnect_Device))
+				{
+					break;
+				}
+			}
+		}
+
 		if(buffer[0] == 0xAA && buffer[1] == 0x55)
 		{
 			if(buffer[0] == 0xAA && buffer[1] == 0x55)
@@ -334,4 +365,21 @@ void Application()
 
 
 	while(1);
+}
+
+
+bool Validate_Command(uint16_t len, Commands command)
+{
+	bool retval = 0;
+	if((buffer[0] == 0xAA) && (buffer[1] == 0x55) && (buffer[len-2] == 0xBB) && (buffer[len-1] == 0x66) && (buffer[2] == command))
+	{
+		CRC_Rec2 = (((uint32_t)buffer[len-6] << 24) | ((uint32_t)buffer[len-5] << 16) | ((uint32_t)buffer[len-4] << 8) | ((uint32_t)buffer[len-3] << 0)) ;
+		CRC_Rec2 = CRC_Compute_8Bit_Block(&buffer[2], len-8);
+		if(CRC_Rec1 == CRC_Rec2)
+		{
+			retval = 1;
+		}
+	}
+
+	return retval;
 }
