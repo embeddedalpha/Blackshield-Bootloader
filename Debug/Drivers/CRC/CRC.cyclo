@@ -3,4 +3,4 @@
 ../Drivers/CRC/CRC.c:21:10:CRC_Compute_Single_Word	1
 ../Drivers/CRC/CRC.c:28:10:CRC_Compute_8Bit_Block	2
 ../Drivers/CRC/CRC.c:41:10:CRC_Compute_32Bit_Block	2
-../Drivers/CRC/CRC.c:54:10:CRC_Compute_Flash_Data	3
+../Drivers/CRC/CRC.c:54:10:CRC_Compute_Flash_Data	1

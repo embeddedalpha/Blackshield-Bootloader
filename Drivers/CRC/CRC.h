@@ -9,6 +9,7 @@
 #define CRC_CRC_H_
 
 #include "main.h"
+#include "DMA/DMA.h"
 
 #define CRC_Polynomial 0x4C11DB7
 
