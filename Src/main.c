@@ -1,160 +1,152 @@
+/* =========================== BOOTLOADER: REFACTORED FOR COMMAND PATTERN =========================== */
 #include "main.h"
 #include "CRC/CRC.h"
 #include "Custom_RS485_Comm/Custom_RS485_Comm.h"
 
-#define APP_ADDRESS      0x08008000U
+#define APP_ADDRESS        0x08008000U
+#define APP_SIZE           (20)  // 64KB
+#define APP_CRC_VALUE      0xD41F4487
+#define APP_CRC_ADDRESS    0x08018000
+#define LOCATE_APP_FUNC    __attribute__((section(".app_section")))
+
+#define HEADER_1           0xAA
+#define HEADER_2           0x55
+#define FOOTER_1           0xBB
+#define FOOTER_2           0x66
+#define PACKET_LENGTH_MIN  10U
+#define PACKET_LENGTH_MAX  (256 + PACKET_LENGTH_MIN)
+
 typedef void (*pFunction)(void);
 pFunction JumpToApplication;
 uint32_t JumpAddress;
 
-#define APP_SIZE      (20)   // 64KB
-#define APP_CRC_ADDRESS     0x08018000
-
-#define LOCATE_APP_FUNC  __attribute__((section(".app_section")))
-
-#define APP_CRC_VALUE 0xD41F4487
-
-void LOCATE_APP_FUNC Blink_App(void)
-{
-		MCU_Clock_Setup();
-		Delay_Config();
-	GPIO_Pin_Init(GPIOA, 1, GPIO_Configuration.Mode.General_Purpose_Output, GPIO_Configuration.Output_Type.Open_Drain, GPIO_Configuration.Speed.High_Speed, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
-
-	while(1)
-	{
-		GPIO_Pin_High(GPIOA, 1);
-		Delay_s(1);
-		GPIO_Pin_Low(GPIOA, 1);
-		Delay_s(1);
-	}
-
-}
-
-
-volatile uint8_t  buffer1[3] = {0,0,0};
-volatile uint8_t  buffer[256];
-uint16_t len = 0;
-
-
-
-typedef enum _Commands_Typedef_{
-	Connect_Device =             0xA1,
-	Disconnect_Device =          0xA2,
-	Write_Firmware =             0xA3,
-	Read_Firmware =              0xA4,
-	Erase_Firmware =             0xA5,
-	Reboot_MCU =                 0xA6
-}Commands;
-
-typedef enum _Request_List_{
-	Req_Request     = 0x01,
-	Req_ACK  		= 0x02,
-}Request_List;
-
-
 typedef enum {
-	STATE_WAIT_CONNECT,
-	STATE_CONNECTED,
-} SystemState;
+    Connect_Device      = 0xA1,
+    Disconnect_Device   = 0xA2,
+    Write_Firmware      = 0xA3,
+    Read_Firmware       = 0xA4,
+    Erase_Firmware      = 0xA5,
+    Reboot_MCU          = 0xA6
+} Commands_t;
 
-Commands Command_RX;
-Request_List Req_RX;
+typedef void (*CommandHandler_t)(void);
 
-uint32_t CRC_Rec1 = 0, CRC_Rec2 = 0;
+typedef struct {
+    uint8_t opcode;
+    CommandHandler_t handler;
+} CommandEntry_t;
 
-void Bootloader(void);
-void Application();
+/* =========================== Command Handlers =========================== */
 void Connect_Device_Func(void);
 void Disconnect_Device_Func(void);
 void Write_Firmware_Func(void);
 void Read_Firmware_Func(void);
-void Reboot_MCU_Func(void);
 void Erase_Firmware_Func(void);
-bool Validate_Command(uint16_t len, Commands command);
-/*==============================================================================================*/
+void Reboot_MCU_Func(void);
 
-int main(void)
+const CommandEntry_t command_table[] = {
+    {Connect_Device,      Connect_Device_Func},
+    {Disconnect_Device,   Disconnect_Device_Func},
+    {Write_Firmware,      Write_Firmware_Func},
+    {Read_Firmware,       Read_Firmware_Func},
+    {Erase_Firmware,      Erase_Firmware_Func},
+    {Reboot_MCU,          Reboot_MCU_Func},
+};
+
+/* =========================== Global Buffers =========================== */
+const uint8_t  buffer1[3] = {0,0,0};
+volatile uint8_t buffer[PACKET_LENGTH_MAX];
+uint16_t len = 0;
+uint32_t CRC_Rec1 = 0, CRC_Rec2 = 0;
+
+/* =========================== Packet Validation =========================== */
+bool Validate_And_Execute_Command(uint8_t *buf, uint16_t len)
 {
-	MCU_Clock_Setup();
-	Delay_Config();
-	CRC_Init();
+    if (len < PACKET_LENGTH_MIN || len > PACKET_LENGTH_MAX) return false;
 
-//	uint32_t CRC_buffer[] = {0x2204B51F,0xE9CD2300,0x22022301,0x210C9200,0x2201480C,0xF858F7FA,0x694B490A,0x5380F443,0xF44F614B,0xF7FB707A,0x3801F819,0x694BD1FB,0x5380F423,0xF44F614B,0xF7FB707A,0x3801F80F,0xE7EAD1FB,0x40020C00};
+    if (buf[0] != HEADER_1 || buf[1] != HEADER_2 ||
+        buf[len-2] != FOOTER_1 || buf[len-1] != FOOTER_2)
+        return false;
 
-//	uint32_t CRC_result = 0;
-//	CRC_result = CRC_Compute_Flash_Data(APP_ADDRESS, 18);
-//
-//	CRC->CR = CRC_CR_RESET;
-//	for (int i = 0; i < 18; i++) {
-//		CRC_Rec1 = 0x08008000 + (i * 4);
-//		CRC_Rec2 = *((volatile uint32_t*)(0x08008000 + (i * 4)));
-//	    CRC->DR = CRC_Rec2;
-//	}
-//	uint32_t result = CRC->DR;
+    uint32_t received_crc = ((uint32_t)buf[len-6] << 24) | ((uint32_t)buf[len-5] << 16) |
+                            ((uint32_t)buf[len-4] << 8)  | ((uint32_t)buf[len-3]);
 
-	GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None, GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
+    uint32_t computed_crc = CRC_Compute_8Bit_Block(&buf[2], len - 8);
 
-	if((GPIOC -> IDR & GPIO_IDR_ID0) == true)
-	{
-		Bootloader();
-	}
-	else
-	{
-		uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE);
-//		uint32_t stored_crc     = *((volatile uint32_t*)(0x08008000));
+    if (received_crc != computed_crc) return false;
 
-		if (calculated_crc == APP_CRC_VALUE) {
-//			MCU_Clock_DeInit();
-//			Delay_DeInit();
-			Blink_App();
-		}
-	}
+    uint8_t opcode = buf[2];
+    for (int i = 0; i < sizeof(command_table)/sizeof(command_table[0]); i++) {
+        if (command_table[i].opcode == opcode) {
+            command_table[i].handler();
+            return true;
+        }
+    }
+
+    return false;
 }
 
-/*==============================================================================================*/
+/* =========================== Bootloader FSM =========================== */
+typedef enum {
+    STATE_WAIT_CONNECT,
+    STATE_CONNECTED,
+} SystemState;
+
+typedef enum _Request_List_{
+	Req_Request     = 0x01,
+	Req_ACK  	= 0x02,
+}Request_List;
 
 void Bootloader(void)
 {
-	Custom_Comm_Init(115200);
-	SystemState state = STATE_WAIT_CONNECT;
+    Custom_Comm_Init(115200);
+    SystemState state = STATE_WAIT_CONNECT;
 
-	while(1){
-		len = Custom_Comm_Receive(buffer);
+    while (1) {
+        len = Custom_Comm_Receive((uint8_t *)buffer);
 
-		switch (state) {
-			case STATE_WAIT_CONNECT:{
-				if(Validate_Command(len, Connect_Device)){
-					state = STATE_CONNECTED;
-					Connect_Device_Func();
-				}
-			}
-			break;
-			case STATE_CONNECTED:{
-				len = Custom_Comm_Receive(buffer);
-				if(Validate_Command(len, Disconnect_Device)){
-					state = STATE_WAIT_CONNECT;
-					Disconnect_Device_Func();
-				}
-				else if(Validate_Command(len, Write_Firmware)){
-					Write_Firmware_Func();
-					state = STATE_CONNECTED;
-				}
-				else if(Validate_Command(len, Read_Firmware)){
-					Read_Firmware_Func();
-					state = STATE_CONNECTED;
-				}
-				else if(Validate_Command(len, Erase_Firmware)){
-					Erase_Firmware_Func();
-					state = STATE_CONNECTED;
-				}
-				else if(Validate_Command(len, Reboot_MCU)){
-					Reboot_MCU_Func();
-					state = STATE_CONNECTED;
-				}
-			}
-			break;
-		}
-	}
+        switch (state) {
+            case STATE_WAIT_CONNECT:
+                if (Validate_And_Execute_Command((uint8_t *)buffer, len))
+                    state = STATE_CONNECTED;
+                break;
+
+            case STATE_CONNECTED:
+                Validate_And_Execute_Command((uint8_t *)buffer, len);
+                break;
+        }
+    }
+}
+
+/* =========================== Application CRC Boot Decision =========================== */
+int main(void)
+{
+    MCU_Clock_Setup();
+    Delay_Config();
+    CRC_Init();
+
+    GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None,
+                  GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
+
+    if ((GPIOC->IDR & GPIO_IDR_ID0) != 0) {
+        Bootloader();
+    } else {
+        uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE);
+        if (calculated_crc == APP_CRC_VALUE) {
+            // Jump to App
+            System_DeInit();
+            MCU_Clock_DeInit();
+            Systick_DeInit();
+            __disable_irq();
+            SCB->VTOR = APP_ADDRESS;
+            __set_MSP(*((__IO uint32_t*) APP_ADDRESS));
+            JumpAddress = *(__IO uint32_t*)(APP_ADDRESS + 4);
+            JumpToApplication = (pFunction)JumpAddress;
+            JumpToApplication();
+        }
+    }
+
+    while (1);
 }
 
 void Connect_Device_Func(void)
@@ -278,47 +270,3 @@ void Reboot_MCU_Func(void)
 	NVIC_SystemReset();
 }
 
-void Application()
-{
-	// Perform CRC on Flash
-
-
-	System_DeInit();
-	MCU_Clock_DeInit();
-	Systick_DeInit();
-
-	__set_PRIMASK(1);
-	__disable_irq();
-	__DSB();
-	__ISB();
-
-	SCB->VTOR = APP_ADDRESS;
-	__set_MSP(*((__IO uint32_t*) APP_ADDRESS));
-
-	// 5. Set PC to application reset handler
-	JumpAddress = *(__IO uint32_t*) (APP_ADDRESS + 4);
-	JumpToApplication = (pFunction) JumpAddress;
-
-	// 6. Jump!
-	JumpToApplication();
-
-
-	while(1);
-}
-
-
-bool Validate_Command(uint16_t len, Commands command)
-{
-	bool retval = 0;
-	if((buffer[0] == 0xAA) && (buffer[1] == 0x55) && (buffer[len-2] == 0xBB) && (buffer[len-1] == 0x66) && (buffer[2] == command))
-	{
-		CRC_Rec2 = (((uint32_t)buffer[len-6] << 24) | ((uint32_t)buffer[len-5] << 16) | ((uint32_t)buffer[len-4] << 8) | ((uint32_t)buffer[len-3] << 0)) ;
-		CRC_Rec2 = CRC_Compute_8Bit_Block(&buffer[2], len-8);
-		if(CRC_Rec1 == CRC_Rec2)
-		{
-			retval = 1;
-		}
-	}
-
-	return retval;
-}
