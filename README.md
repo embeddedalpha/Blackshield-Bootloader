@@ -9,4 +9,4 @@
 
 ### Run the PC application to flash the processor
 
-![alt text](image.png)
+![alt text](./Software/Resources/image.png)
