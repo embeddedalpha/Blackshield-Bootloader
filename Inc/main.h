@@ -28,7 +28,7 @@ typedef struct Interrupts
 	uint32_t Interrup_Flags;
 }Interrupts;
 
-#define __weak   __attribute__((weak))
+//#define __weak   __attribute__((weak))
 
 #define SPI_Debug_Flag 0
 
@@ -91,14 +91,26 @@ __STATIC_INLINE void MCU_Clock_Setup(void)
 
 __STATIC_INLINE void MCU_Clock_DeInit(void)
 {
-	RCC -> CFGR &= ~RCC_CFGR_SW_PLL;
-	while((RCC->CR & RCC_CR_PLLRDY)){}
-	RCC->PLLCFGR = 0x00000000;
-	RCC -> CFGR = 0x00000000;
-	RCC -> CR &= ~RCC_CR_HSEON;
-	while((RCC -> CR & RCC_CR_HSERDY)){}
+    // 1) Enable internal HSI and wait for it ready
+    RCC->CR |= RCC_CR_HSION;
+    while (!(RCC->CR & RCC_CR_HSIRDY)) { }
 
+    // 2) Reset CFGR register (dividers, SW, etc.)
+    RCC->CFGR = 0x00000000U;
 
+    // 3) Turn off PLL, HSE, CSS
+    RCC->CR &= ~(RCC_CR_PLLON   |   // disable PLL
+                 RCC_CR_HSEON   |   // disable HSE
+                 RCC_CR_CSSON);     // disable clock security system
+
+    // 4) Reset PLL configuration to reset value (0x24003010)
+    RCC->PLLCFGR = 0x24003010U;
+
+    // 5) Disable HSE bypass if set
+    RCC->CR &= ~RCC_CR_HSEBYP;
+
+    // 6) Disable all clock interrupts
+    RCC->CIR = 0x00000000U;
 }
 
 __STATIC_INLINE int I2S_Clock_Init()
@@ -133,13 +145,9 @@ __STATIC_INLINE uint32_t Delay_Config(void)
 	return (0UL);                                                     /* Function successful */
 }
 
-__STATIC_INLINE void Delay_DeInit(void)
-{
-	SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
-}
 
 
-__STATIC_INLINE uint32_t Delay_us(volatile float us)
+__STATIC_INLINE uint32_t Delay_us(volatile uint32_t us)
 {
 
 	SysTick->LOAD = 168 * us;
@@ -148,7 +156,7 @@ __STATIC_INLINE uint32_t Delay_us(volatile float us)
 	return (0UL);                                                     /* Function successful */
 }
 
-__STATIC_INLINE uint32_t Delay_ms(volatile float ms)
+__STATIC_INLINE uint32_t Delay_ms(volatile uint32_t ms)
 {
 	unsigned long x =0x29040 * (ms);
 	SysTick->LOAD =  x ;
@@ -266,9 +274,15 @@ __STATIC_INLINE void System_DeInit(void)
 
 __STATIC_INLINE void Systick_DeInit(void)
 {
-	SysTick->CTRL = 0;//to turn off the systick
-	SysTick->LOAD = 0;
-	SysTick->VAL = 0;
+    // 1) Disable SysTick counter and its IRQ
+    SysTick->CTRL = 0x00000000U;
+
+    // 2) Clear reload value and current value
+    SysTick->LOAD = 0x00000000U;
+    SysTick->VAL  = 0x00000000U;
+
+    // 3) Clear any SysTick active bit in System
+    SCB->SHCSR &= ~SCB_SHCSR_SYSTICKACT_Msk;
 }
 
 typedef struct Time_Typedef

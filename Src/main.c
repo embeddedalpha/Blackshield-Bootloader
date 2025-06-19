@@ -131,8 +131,8 @@ int main(void)
     if ((GPIOC->IDR & GPIO_IDR_ID0) != 0) {
         Bootloader();
     } else {
-        uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE);
-        if (calculated_crc == APP_CRC_VALUE) {
+        //uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE);
+//        if (calculated_crc == APP_CRC_VALUE) {
             // Jump to App
             System_DeInit();
             MCU_Clock_DeInit();
@@ -143,7 +143,7 @@ int main(void)
             JumpAddress = *(__IO uint32_t*)(APP_ADDRESS + 4);
             JumpToApplication = (pFunction)JumpAddress;
             JumpToApplication();
-        }
+//        }
     }
 
     while (1);
