@@ -134,15 +134,17 @@ int main(void)
         //uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE);
 //        if (calculated_crc == APP_CRC_VALUE) {
             // Jump to App
-            System_DeInit();
+
+    	Console_Init(115200);
+    	printConsole("Jumping to App1 \r\n");
+//
             MCU_Clock_DeInit();
             Systick_DeInit();
             __disable_irq();
-            SCB->VTOR = APP_ADDRESS;
-            __set_MSP(*((__IO uint32_t*) APP_ADDRESS));
-            JumpAddress = *(__IO uint32_t*)(APP_ADDRESS + 4);
-            JumpToApplication = (pFunction)JumpAddress;
-            JumpToApplication();
+            //working code
+            __set_MSP(*((__IO uint32_t*) 0x8010000));
+            void (*app_reset_handler)(void) = (void*)(*(volatile uint32_t *)(0x8010000 + 4));
+            app_reset_handler();
 //        }
     }
 
