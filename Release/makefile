@@ -73,8 +73,8 @@ all: main-build
 main-build: Blackshield_Bootloader.elf secondary-outputs
 
 # Tool invocations
-Blackshield_Bootloader.elf Blackshield_Bootloader.map: $(OBJS) $(USER_OBJS) D:\STM32F407_Projects\Blackshield_Bootloader\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Blackshield_Bootloader.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\STM32F407_Projects\Blackshield_Bootloader\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Blackshield_Bootloader.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Blackshield_Bootloader.elf Blackshield_Bootloader.map: $(OBJS) $(USER_OBJS) D:\STM32_Bootloader\Blackshield_Bootloader\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Blackshield_Bootloader.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\STM32_Bootloader\Blackshield_Bootloader\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Blackshield_Bootloader.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

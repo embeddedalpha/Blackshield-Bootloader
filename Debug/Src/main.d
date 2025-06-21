@@ -9,7 +9,8 @@ Src/main.o: ../Src/main.c ../Inc/main.h ../Inc/stm32f407xx.h \
  D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/GPIO/GPIO.h \
  D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/GPIO/GPIO_Defs.h \
  D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/USART/USART.h \
- D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/USART/USART_Defs.h
+ D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/USART/USART_Defs.h \
+ D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/Console/Console.h
 ../Inc/main.h:
 ../Inc/stm32f407xx.h:
 ../Inc/core_cm4.h:
@@ -27,3 +28,4 @@ D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/GPIO/GPIO.h:
 D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/GPIO/GPIO_Defs.h:
 D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/USART/USART.h:
 D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/USART/USART_Defs.h:
+D:/STM32_Bootloader/Blackshield_Bootloader/Drivers/Console/Console.h:

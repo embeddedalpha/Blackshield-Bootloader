@@ -3,6 +3,7 @@
 "./Drivers/Console/Console.o"
 "./Drivers/Custom_RS485_Comm/Custom_RS485_Comm.o"
 "./Drivers/DMA/DMA.o"
+"./Drivers/Flash/Flash.o"
 "./Drivers/GPIO/GPIO.o"
 "./Drivers/USART/USART.o"
 "./Src/main.o"

@@ -2,8 +2,9 @@
 #include "main.h"
 #include "CRC/CRC.h"
 #include "Custom_RS485_Comm/Custom_RS485_Comm.h"
+#include "Console/Console.h"
 
-#define APP_ADDRESS        0x08008000U
+#define APP_ADDRESS        0x08010000U
 #define APP_SIZE           (20)  // 64KB
 #define APP_CRC_VALUE      0xD41F4487
 #define APP_CRC_ADDRESS    0x08018000
@@ -135,8 +136,11 @@ int main(void)
 //        if (calculated_crc == APP_CRC_VALUE) {
             // Jump to App
 
+    	CRC_Rec1 = CRC_Compute_Flash_Data(APP_ADDRESS, (0x210-0x01));
+
     	Console_Init(115200);
     	printConsole("Jumping to App1 \r\n");
+    	printConsole("Application CRC = 0x%x \r\n",CRC_Rec1);
 //
             MCU_Clock_DeInit();
             Systick_DeInit();
@@ -240,10 +244,10 @@ void Erase_Firmware_Func(void)
 	buffer[2] = Erase_Firmware;
 	buffer[3] = Req_ACK;
 	//Read Flash Memory
-	CRC_Rec1 = CRC_Compute_8Bit_Block(&buffer[2], 7);
+	CRC_Rec1   = CRC_Compute_8Bit_Block(&buffer[2], 7);
 	buffer[9]  = (CRC_Rec1 & 0xFF000000) >> 24;
-	buffer[10]  = (CRC_Rec1 & 0x00FF0000) >> 16;
-	buffer[11]  = (CRC_Rec1 & 0x0000FF00) >> 8;
+	buffer[10] = (CRC_Rec1 & 0x00FF0000) >> 16;
+	buffer[11] = (CRC_Rec1 & 0x0000FF00) >> 8;
 	buffer[12] = (CRC_Rec1 & 0x000000FF) >> 0;
 	buffer[13] = 0xBB;
 	buffer[14] = 0x66;
@@ -260,10 +264,10 @@ void Reboot_MCU_Func(void)
 	buffer[3] = Req_ACK;
 	//Read Flash Memory
 	CRC_Rec1 = CRC_Compute_8Bit_Block(&buffer[2], 7);
-	buffer[9]  = (CRC_Rec1 & 0xFF000000) >> 24;
+	buffer[9]  =  (CRC_Rec1 & 0xFF000000) >> 24;
 	buffer[10]  = (CRC_Rec1 & 0x00FF0000) >> 16;
 	buffer[11]  = (CRC_Rec1 & 0x0000FF00) >> 8;
-	buffer[12] = (CRC_Rec1 & 0x000000FF) >> 0;
+	buffer[12] =  (CRC_Rec1 & 0x000000FF) >> 0;
 	buffer[13] = 0xBB;
 	buffer[14] = 0x66;
 	Custom_Comm_Send(buffer, 14);
