@@ -12,10 +12,27 @@
 
 #define HEADER_1           0xAA
 #define HEADER_2           0x55
+#define VERSION			   0x01
+#define SEQ				   0x01
 #define FOOTER_1           0xBB
 #define FOOTER_2           0x66
 #define PACKET_LENGTH_MIN  10U
 #define PACKET_LENGTH_MAX  (256 + PACKET_LENGTH_MIN)
+
+
+typedef struct Command_Structure_Typedef
+{
+	uint8_t Start_Frame_1;
+	uint8_t Start_Frame_2;
+	uint8_t Version;
+	uint8_t Seq;
+	uint8_t Command;
+	uint8_t Len;
+	uint8_t Payload[255];
+	uint8_t End_Frame_1;
+	uint8_t End_Frame_2;
+}Command_Structure;
+
 
 typedef void (*pFunction)(void);
 pFunction JumpToApplication;
@@ -29,6 +46,8 @@ typedef enum {
     Erase_Firmware      = 0xA5,
     Reboot_MCU          = 0xA6
 } Commands_t;
+
+
 
 typedef void (*CommandHandler_t)(void);
 
