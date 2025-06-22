@@ -50,3 +50,23 @@ MEMORY
 ### Run the PC application to flash the processor
 
 ![alt text](./Software/Resources/image.png)
+
+
+### Command Structure
+
+```
+     __________________________________________________________________________________
+     |                |         |          |         |        |         |              |
+     | Start of Frame | Version | Sequence | Command | Length | Payload | End of Frame |
+     |________________|_________|__________|_________|________|_________|______________|
+
+     Start of Frame: 0xAA 0x55
+     Version: 0x01
+     Sequence: 0x01
+     Command: 0xA0 - 0xA6
+     Length: 0-255
+     Payload: data[0] - data[255]
+     End of Frame: 0xBB 0x66
+
+```
+
