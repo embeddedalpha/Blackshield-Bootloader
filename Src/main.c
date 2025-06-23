@@ -12,26 +12,11 @@
 
 #define HEADER_1           0xAA
 #define HEADER_2           0x55
-#define VERSION			   0x01
-#define SEQ				   0x01
 #define FOOTER_1           0xBB
 #define FOOTER_2           0x66
 #define PACKET_LENGTH_MIN  10U
 #define PACKET_LENGTH_MAX  (256 + PACKET_LENGTH_MIN)
 
-
-typedef struct Command_Structure_Typedef
-{
-	uint8_t Start_Frame_1;
-	uint8_t Start_Frame_2;
-	uint8_t Version;
-	uint8_t Seq;
-	uint8_t Command;
-	uint8_t Len;
-	uint8_t Payload[255];
-	uint8_t End_Frame_1;
-	uint8_t End_Frame_2;
-}Command_Structure;
 
 
 typedef void (*pFunction)(void);
@@ -160,7 +145,6 @@ int main(void)
     	Console_Init(115200);
     	printConsole("Jumping to App1 \r\n");
     	printConsole("Application CRC = 0x%x \r\n",CRC_Rec1);
-//
             MCU_Clock_DeInit();
             Systick_DeInit();
             __disable_irq();
@@ -213,8 +197,6 @@ void Disconnect_Device_Func(void)
 	buffer[9] = 0x66;
 	Custom_Comm_Send(buffer, 10);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
-
-
 }
 
 
