@@ -8,7 +8,7 @@
 
 #include "POST.h"
 
-#define LED_PIN 1  // e.g. PA5 on Nucleo
+#define LED_PIN 1  // e.g. PA1 on Nucleo
 
 #define BOOT_START_ADDR   ((uint32_t)0x08000000)
 #define BOOT_SIZE_WORDS   ((uint32_t)(0x0000FFFFU / 4))  // 64 KB bootloader
@@ -16,7 +16,7 @@
 
 #define SRAM_START ((uint32_t)0x20000000)
 #define SRAM_SIZE  ((uint32_t)0x00020000)  // 128 KB
-#define SRAM_END   (SRAM_START + SRAM_SIZE)
+#define SRAM_END   ((uint32_t)0x2001FFC0)
 
 volatile uint8_t systick_flag = 0;
 
@@ -32,7 +32,9 @@ POST_Result POST_ClockCheck(void)
 	RCC -> CR |= RCC_CR_HSEON;
 	timeout = TIMEOUT_COUNT;
 	while (!(RCC->CR & RCC_CR_HSERDY)) {
-		if (--timeout == 0) return POST_FAIL;
+		if (--timeout == 0) {
+			return POST_FAIL;
+		}
 	}
 
 	RCC->PLLCFGR = (8U       << RCC_PLLCFGR_PLLM_Pos)   |
@@ -45,7 +47,9 @@ POST_Result POST_ClockCheck(void)
 	// 5. Wait for PLL ready
 	timeout = TIMEOUT_COUNT;
 	while (!(RCC->CR & RCC_CR_PLLRDY)) {
-		if (--timeout == 0) return POST_FAIL;
+		if (--timeout == 0){
+			return POST_FAIL;
+		}
 	}
 
 	RCC->CFGR &= ~RCC_CFGR_SW;          // clear SW
@@ -53,7 +57,9 @@ POST_Result POST_ClockCheck(void)
 	// 7. Wait for switch
 	timeout = TIMEOUT_COUNT;
 	while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL) {
-		if (--timeout == 0) return POST_FAIL;
+		if (--timeout == 0){
+			return POST_FAIL;
+		}
 	}
 
 	return POST_OK;
@@ -95,7 +101,7 @@ POST_Result POST_SRAM_Test(void)
 	}
 	// Phase 2: check and write 0x55555555
 	for (addr = (uint32_t*)SRAM_START; addr < (uint32_t*)SRAM_END; ++addr) {
-		if (*addr != pattern) return POST_FAIL;
+		if (*addr != pattern) return POST_FAIL; //
 		*addr = 0x55555555U;
 	}
 	// Phase 3: check 0x55555555
@@ -182,3 +188,6 @@ void fail_safe(void) {
         for (volatile uint32_t d=0; d<200000; ++d);
     }
 }
+
+
+

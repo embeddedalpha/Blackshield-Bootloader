@@ -16,7 +16,7 @@ typedef enum {
 	POST_OK=0,
 	POST_FAIL
 } POST_Result;
-
+POST_Result dummy();
 POST_Result POST_ClockCheck(void);
 POST_Result POST_CPUCoreTest(void);
 POST_Result POST_SRAM_Test(void);

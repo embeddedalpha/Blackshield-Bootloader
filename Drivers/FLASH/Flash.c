@@ -20,13 +20,22 @@ void Flash_Unlock(void)
 	}
 }
 
-void flash_lock(void)
+void Flash_Lock(void)
 {
     FLASH->CR |= FLASH_CR_LOCK;
 }
 
 
-void Flash_Erase_Sector(uint8_t sector_number)
+void Flash_Write_Enable(void)
+{
+	FLASH->CR |= FLASH_CR_PG;
+}
+void Flash_Write_Disable(void)
+{
+	FLASH->CR &= ~FLASH_CR_PG;
+}
+
+void Flash_Erase_Sector(Flash_Sectors_Typedef sector_number)
 {
     while (FLASH->SR & FLASH_SR_BSY); // Wait if busy
 
@@ -39,3 +48,6 @@ void Flash_Erase_Sector(uint8_t sector_number)
 
     FLASH->CR &= ~FLASH_CR_SER; // Clear SER
 }
+
+
+//void Flash_Write_Sector(void *source, uint8_t data_length, )
