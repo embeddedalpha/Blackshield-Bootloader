@@ -1,3 +1,4 @@
 ../Drivers/Flash/Flash.c:15:6:Flash_Unlock	2
-../Drivers/Flash/Flash.c:23:6:flash_lock	1
-../Drivers/Flash/Flash.c:29:6:Flash_Erase_Sector	3
+../Drivers/Flash/Flash.c:23:6:Flash_Lock	1
+../Drivers/Flash/Flash.c:29:6:Flash_Write_Enable	1
+../Drivers/Flash/Flash.c:34:6:Flash_Erase_Sector	3

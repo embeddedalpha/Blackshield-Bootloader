@@ -6,7 +6,7 @@
 #define APP_CRC_VALUE      0xD41F4487
 #define APP_CRC_ADDRESS    0x08018000
 
-
+#define Bootmode_Toggle_Count 6
 
 #define LOCATE_APP_FUNC    __attribute__((section(".app_section")))
 
@@ -129,25 +129,98 @@ void Bootloader(void)
     }
 }
 
+
+POST_Result result;
+
 /* =========================== Application CRC Boot Decision =========================== */
 int main(void)
 {
 
-    if (POST_ClockCheck()    != POST_OK) fail_safe();
-    if (POST_CPUCoreTest()   != POST_OK) fail_safe();
-    if (POST_SRAM_Test()     != POST_OK) fail_safe();
-    if (POST_FlashCRC()      != POST_OK) fail_safe();
-    if (POST_InterruptTest() != POST_OK) fail_safe();
-    if (POST_WatchdogTest()  != POST_OK) fail_safe();
-
+//	result = POST_ClockCheck();
+//	result = POST_CPUCoreTest();
+//	result = POST_SRAM_Test();
+//	result = POST_InterruptTest();
+//	result = POST_WatchdogTest();
+//	result = POST_ClockCheck();
+//
+//
+//    if (POST_CPUCoreTest()   != POST_OK){
+//    	fail_safe();
+//    }
+//    if (POST_SRAM_Test()     != POST_OK){
+//    	fail_safe();
+//    }
+////    if (POST_FlashCRC()      != POST_OK){
+////    	fail_safe();
+////    }
+//    if (POST_InterruptTest() != POST_OK){
+//    	fail_safe();
+//    }
+//    if (POST_WatchdogTest()  != POST_OK){
+//    	fail_safe();
+//    }
+//	POST_CPUCoreTest();
+//	POST_SRAM_Test();
     MCU_Clock_Setup();
     Delay_Config();
     CRC_Init();
 
+
+
+//    if(POST_CPUCoreTest() == POST_OK){
+//    	printConsole("POST::CPUCore Test::Pass \r\n ");
+//    }
+//    else
+//    {
+//    	printConsole("POST::CPUCore Test::Fail \r\n ");
+//    }
+//    if( == POST_OK){
+//    	printConsole("POST::POST_SRAM_Test::Pass \r\n ");
+//    }
+//    else
+//    {
+//    	printConsole("POST::POST_SRAM_Test::Fail \r\n ");
+//    }
+//    if(POST_InterruptTest() == POST_OK) printConsole("POST:InterruptTest \r\n ");
+
+
+    GPIO_Pin_Init(GPIOD, 12, GPIO_Configuration.Mode.General_Purpose_Output,
+    						GPIO_Configuration.Output_Type.Push_Pull,
+							GPIO_Configuration.Speed.Very_High_Speed,
+							GPIO_Configuration.Pull.Pull_Down,
+							GPIO_Configuration.Alternate_Functions.None);
+
+    GPIO_Pin_Init(GPIOD, 13, GPIO_Configuration.Mode.General_Purpose_Output,
+    						GPIO_Configuration.Output_Type.Push_Pull,
+							GPIO_Configuration.Speed.Very_High_Speed,
+							GPIO_Configuration.Pull.Pull_Down,
+							GPIO_Configuration.Alternate_Functions.None);
+    GPIO_Pin_Init(GPIOD, 14, GPIO_Configuration.Mode.General_Purpose_Output,
+    						GPIO_Configuration.Output_Type.Push_Pull,
+							GPIO_Configuration.Speed.Very_High_Speed,
+							GPIO_Configuration.Pull.Pull_Down,
+							GPIO_Configuration.Alternate_Functions.None);
+    GPIO_Pin_Init(GPIOD, 15, GPIO_Configuration.Mode.General_Purpose_Output,
+    						GPIO_Configuration.Output_Type.Push_Pull,
+							GPIO_Configuration.Speed.Very_High_Speed,
+							GPIO_Configuration.Pull.Pull_Down,
+							GPIO_Configuration.Alternate_Functions.None);
+
+    for(int i = 0; i < Bootmode_Toggle_Count; i++)
+    {
+    	GPIO_Pin_Toggle(GPIOD, 12);
+    	GPIO_Pin_Toggle(GPIOD, 13);
+    	GPIO_Pin_Toggle(GPIOD, 14);
+    	GPIO_Pin_Toggle(GPIOD, 15);
+    	Delay_s(1);
+    }
+
+
+
     GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None,
                   GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
 
-    if ((GPIOC->IDR & GPIO_IDR_ID0) != 0) {
+    if ((GPIOC->IDR & GPIO_IDR_ID0) != 1) {
         Bootloader();
     } else {
         //uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE);
@@ -157,8 +230,11 @@ int main(void)
     	CRC_Rec1 = CRC_Compute_Flash_Data(APP_ADDRESS, (0x210-0x01));
 
     	Console_Init(115200);
-    	printConsole("Jumping to App1 \r\n");
+    	printConsole("Jumping from Bootloader to Application 1 \r\n");
+    	Delay_milli(20);
     	printConsole("Application CRC = 0x%x \r\n",CRC_Rec1);
+    	Delay_milli(20);
+
             MCU_Clock_DeInit();
             Systick_DeInit();
             __disable_irq();

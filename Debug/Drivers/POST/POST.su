@@ -1,8 +1,8 @@
 ../Drivers/POST/POST.c:23:6:SysTick_Handler	4	static
 ../Drivers/POST/POST.c:28:13:POST_ClockCheck	16	static
-../Drivers/POST/POST.c:64:13:POST_CPUCoreTest	32	static
-../Drivers/POST/POST.c:86:13:POST_SRAM_Test	16	static
-../Drivers/POST/POST.c:109:13:POST_FlashCRC	24	static
-../Drivers/POST/POST.c:130:13:POST_InterruptTest	16	static
-../Drivers/POST/POST.c:149:13:POST_WatchdogTest	16	static
-../Drivers/POST/POST.c:170:6:fail_safe	16	static,ignoring_inline_asm
+../Drivers/POST/POST.c:70:13:POST_CPUCoreTest	32	static
+../Drivers/POST/POST.c:92:13:POST_SRAM_Test	16	static
+../Drivers/POST/POST.c:115:13:POST_FlashCRC	24	static
+../Drivers/POST/POST.c:136:13:POST_InterruptTest	16	static
+../Drivers/POST/POST.c:155:13:POST_WatchdogTest	16	static
+../Drivers/POST/POST.c:176:6:fail_safe	16	static,ignoring_inline_asm
