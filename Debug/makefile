@@ -12,6 +12,7 @@ RM := rm -rf
 -include Startup/subdir.mk
 -include Src/subdir.mk
 -include Drivers/USART/subdir.mk
+-include Drivers/POST/subdir.mk
 -include Drivers/GPIO/subdir.mk
 -include Drivers/Flash/subdir.mk
 -include Drivers/DMA/subdir.mk

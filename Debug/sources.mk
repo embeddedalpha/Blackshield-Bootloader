@@ -30,6 +30,7 @@ Drivers/Custom_RS485_Comm \
 Drivers/DMA \
 Drivers/Flash \
 Drivers/GPIO \
+Drivers/POST \
 Drivers/USART \
 Src \
 Startup \

@@ -1,0 +1,8 @@
+../Drivers/POST/POST.c:23:6:SysTick_Handler	1
+../Drivers/POST/POST.c:28:13:POST_ClockCheck	7
+../Drivers/POST/POST.c:64:13:POST_CPUCoreTest	4
+../Drivers/POST/POST.c:86:13:POST_SRAM_Test	6
+../Drivers/POST/POST.c:109:13:POST_FlashCRC	3
+../Drivers/POST/POST.c:130:13:POST_InterruptTest	3
+../Drivers/POST/POST.c:149:13:POST_WatchdogTest	2
+../Drivers/POST/POST.c:170:6:fail_safe	2

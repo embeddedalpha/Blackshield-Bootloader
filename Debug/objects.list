@@ -5,6 +5,7 @@
 "./Drivers/DMA/DMA.o"
 "./Drivers/Flash/Flash.o"
 "./Drivers/GPIO/GPIO.o"
+"./Drivers/POST/POST.o"
 "./Drivers/USART/USART.o"
 "./Src/main.o"
 "./Src/syscalls.o"

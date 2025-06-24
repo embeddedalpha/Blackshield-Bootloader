@@ -1,14 +1,20 @@
 /* =========================== BOOTLOADER: REFACTORED FOR COMMAND PATTERN =========================== */
-#include "main.h"
-#include "CRC/CRC.h"
-#include "Custom_RS485_Comm/Custom_RS485_Comm.h"
-#include "Console/Console.h"
+
 
 #define APP_ADDRESS        0x08010000U
 #define APP_SIZE           (20)  // 64KB
 #define APP_CRC_VALUE      0xD41F4487
 #define APP_CRC_ADDRESS    0x08018000
+
+
+
 #define LOCATE_APP_FUNC    __attribute__((section(".app_section")))
+
+#include "main.h"
+#include "CRC/CRC.h"
+#include "Custom_RS485_Comm/Custom_RS485_Comm.h"
+#include "Console/Console.h"
+#include "POST/POST.h"
 
 #define HEADER_1           0xAA
 #define HEADER_2           0x55
@@ -126,6 +132,14 @@ void Bootloader(void)
 /* =========================== Application CRC Boot Decision =========================== */
 int main(void)
 {
+
+    if (POST_ClockCheck()    != POST_OK) fail_safe();
+    if (POST_CPUCoreTest()   != POST_OK) fail_safe();
+    if (POST_SRAM_Test()     != POST_OK) fail_safe();
+    if (POST_FlashCRC()      != POST_OK) fail_safe();
+    if (POST_InterruptTest() != POST_OK) fail_safe();
+    if (POST_WatchdogTest()  != POST_OK) fail_safe();
+
     MCU_Clock_Setup();
     Delay_Config();
     CRC_Init();
