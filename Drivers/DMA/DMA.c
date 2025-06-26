@@ -1656,6 +1656,12 @@ void DMA_Set_Trigger(DMA_Config *config)
 	}
 }
 
+void DMA_Disable_Target(DMA_Config *config)
+{
+	DMA_TypeDef *controller = config->Request.Controller;
+	DMA_Stream_TypeDef *stream = config->Request.Stream;
+	stream->CR &= ~DMA_SxCR_EN;  // Disable the DMA stream
+}
 
 
 

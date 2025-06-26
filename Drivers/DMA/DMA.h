@@ -211,4 +211,7 @@ void DMA_Memory_To_Memory_Transfer(volatile void *source,
 		volatile void *destination, uint8_t dest_data_size,
 		bool destination_increment, uint16_t length);
 
+
+void DMA_Disable_Target(DMA_Config *config);
+
 #endif /* DMA_H_ */

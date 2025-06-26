@@ -25,6 +25,6 @@
 ../Drivers/USART/USART.c:545:8:USART_Init	72	static
 ../Drivers/USART/USART.c:783:8:USART_TX_Buffer	32	static
 ../Drivers/USART/USART.c:842:8:USART_RX_Buffer	32	static
-../Drivers/USART/USART.c:909:6:USART_TX_Single_Byte	16	static
-../Drivers/USART/USART.c:915:10:USART_RX_Single_Byte	24	static
-../Drivers/USART/USART.c:923:6:USART_Clear_Status_Regs	16	static
+../Drivers/USART/USART.c:911:6:USART_TX_Single_Byte	16	static
+../Drivers/USART/USART.c:917:10:USART_RX_Single_Byte	24	static
+../Drivers/USART/USART.c:925:6:USART_Clear_Status_Regs	16	static

@@ -859,7 +859,6 @@ int8_t USART_RX_Buffer(USART_Config *config, uint8_t *rx_buffer, uint16_t length
 		DMA_Set_Trigger(&xUSART_RX[usart_dma_instance_number]);
 		config -> Port -> CR3 |= USART_CR3_DMAR;
 
-
 		if(config->Port == USART1)
 		{
 			while(!U1RX_Complete){}
@@ -891,6 +890,9 @@ int8_t USART_RX_Buffer(USART_Config *config, uint8_t *rx_buffer, uint16_t length
 			while(!U6RX_Complete){}
 			U6RX_Complete = 0;
 		}
+
+//		config -> Port -> CR3 &= ~USART_CR3_DMAR;
+//		DMA_Disable_Target(&xUSART_RX[usart_dma_instance_number]);
 
 	}
 	else

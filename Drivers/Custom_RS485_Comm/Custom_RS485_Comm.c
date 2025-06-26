@@ -5,7 +5,7 @@
 volatile int custom_rx_get_flag = 0; // Indicates if the reception is active
 volatile int custom_rx_flag = 0;     // Indicates if data reception is complete
 
-#define Custom_RX_Buffer_Length 256 // Length of the reception buffer
+#define Custom_RX_Buffer_Length 500 // Length of the reception buffer
 
 // Variables to track the length of received data and the reception buffer
 volatile int Custom_RX_Length = 0;

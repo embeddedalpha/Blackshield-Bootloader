@@ -46,10 +46,11 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Memories definition */
 MEMORY
 {
-  CCMRAM    (xrw)    : ORIGIN = 0x10000000,   LENGTH = 64K
-  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 64K
-  APP_MEMORY (rx)   : ORIGIN = 0x8010000,   LENGTH = 448K
+  CCMRAM    (xrw)   : ORIGIN = 0x10000000,   LENGTH = 64K
+  RAM    (xrw)      : ORIGIN = 0x20000000,   LENGTH = 128K
+  FLASH    (rx)     : ORIGIN = 0x08000000,   LENGTH = 64K
+  APP_MEMORY (rx)   : ORIGIN = 0x08010000,   LENGTH = 64K
+  /*BOOT_DATA (rx)     : ORIGIN = 0x08020000,   LENGTH = 128*/
 }
 
 /* Sections */
@@ -88,6 +89,15 @@ SECTIONS
     *(.app_section*)              /* pull in anything you’ve put in .app_section */
     __app_section_end__   = .;    /* save end address */
   } > APP_MEMORY                 /* place it in the APP_MEMORY region */
+  
+/*  .boot_data_section :
+/*  {
+/*  . = ALIGN(4);
+ /*   __boot_data_section_start__ = .;    /* save start address */
+ /*   *(.boot_data_section*)              /* pull in anything you’ve put in .app_section */
+ /*   __boot_data_section_end__   = .;    /* save end address */
+/*  } > BOOT_DATA                 /* place it in the APP_MEMORY region */
+  
 
   /* 2) now assert that its size <= the region length */
 

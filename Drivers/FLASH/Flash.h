@@ -17,7 +17,7 @@ typedef enum {
 	Sector_1,  //0x0800 4000 - 0x0800 7FFF 16 Kbytes
 	Sector_2,  //0x0800 8000 - 0x0800 BFFF 16 Kbytes
 	Sector_3,  //0x0800 C000 - 0x0800 FFFF 16 Kbytes
-	Sector_4,  //0x0801 0000 - 0x0801 FFFF 64 Kbytes
+	Sector_4_0x08010000,  //0x0801 0000 - 0x0801 FFFF 64 Kbytes
 	Sector_5,  //0x0802 0000 - 0x0803 FFFF 128 Kbytes
 	Sector_6,  //0x0804 0000 - 0x0805 FFFF 128 Kbytes
 	Sector_7,  //0x0806 0000 - 0x0807 FFFF 128 Kbytes
@@ -37,8 +37,10 @@ void FLash_Write_Data(volatile void  *desitnation_buffer,uint8_t data_length, ui
 uint32_t Flash_Read_Single_Word(uint32_t Flash_Address);
 uint16_t Flash_Read_Single_Half_Word(uint32_t Flash_Address);
 uint8_t  Flash_Read_Single_Byte(uint32_t Flash_Address);
-
-
+void Flash_Write_Sigle_Word(uint32_t Flash_Address, uint32_t data);
+void Flash_Write_Sigle_Half_Word(uint32_t Flash_Address, uint16_t data);
+void Flash_Write_Sigle_Byte(uint32_t Flash_Address, uint8_t data);
+int Flash_Write_Data_32(uint32_t address, uint32_t data);
 
 
 
