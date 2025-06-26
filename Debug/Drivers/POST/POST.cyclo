@@ -6,3 +6,5 @@
 ../Drivers/POST/POST.c:136:13:POST_InterruptTest	3
 ../Drivers/POST/POST.c:155:13:POST_WatchdogTest	2
 ../Drivers/POST/POST.c:176:6:fail_safe	2
+../Drivers/POST/POST.c:192:6:CPU_RegisterTest	6
+../Drivers/POST/POST.c:242:6:RAM_MarchCTest	8

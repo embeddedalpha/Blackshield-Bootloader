@@ -9,6 +9,7 @@
 #define FLASH_FLASH_H_
 
 #include "main.h"
+#include "DMA/DMA.h"
 
 typedef enum {
 
@@ -32,5 +33,13 @@ void Flash_Lock(void);
 void Flash_Write_Enable(void);
 void Flash_Write_Disable(void);
 void Flash_Erase_Sector(Flash_Sectors_Typedef sector_number);
+void FLash_Write_Data(volatile void  *desitnation_buffer,uint8_t data_length, uint16_t length, uint32_t Flash_Address);
+uint32_t Flash_Read_Single_Word(uint32_t Flash_Address);
+uint16_t Flash_Read_Single_Half_Word(uint32_t Flash_Address);
+uint8_t  Flash_Read_Single_Byte(uint32_t Flash_Address);
+
+
+
+
 
 #endif /* FLASH_FLASH_H_ */

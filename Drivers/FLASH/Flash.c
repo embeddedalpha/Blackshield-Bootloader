@@ -49,5 +49,26 @@ void Flash_Erase_Sector(Flash_Sectors_Typedef sector_number)
     FLASH->CR &= ~FLASH_CR_SER; // Clear SER
 }
 
+void FLash_Write_Data(volatile void  *desitnation_buffer,uint8_t data_length, uint16_t length, uint32_t Flash_Address)
+{
+	DMA_Memory_To_Memory_Transfer(desitnation_buffer, data_length, 1, Flash_Address, data_length, 1, length);
+}
+
+uint32_t Flash_Read_Single_Word(uint32_t Flash_Address)
+{
+	return *(__IO uint32_t *)Flash_Address;
+}
+
+uint16_t Flash_Read_Single_Half_Word(uint32_t Flash_Address)
+{
+	return *(__IO uint32_t *)Flash_Address;
+}
+
+uint8_t Flash_Read_Single_Byte(uint32_t Flash_Address)
+{
+	return *(__IO uint32_t *)Flash_Address;
+}
+
+
 
 //void Flash_Write_Sector(void *source, uint8_t data_length, )

@@ -6,3 +6,5 @@
 ../Drivers/POST/POST.c:136:13:POST_InterruptTest	16	static
 ../Drivers/POST/POST.c:155:13:POST_WatchdogTest	16	static
 ../Drivers/POST/POST.c:176:6:fail_safe	16	static,ignoring_inline_asm
+../Drivers/POST/POST.c:192:6:CPU_RegisterTest	56	static,ignoring_inline_asm
+../Drivers/POST/POST.c:242:6:RAM_MarchCTest	16	static

@@ -2,7 +2,7 @@
 
 
 #define APP_ADDRESS        0x08010000U
-#define APP_SIZE           (20)  // 64KB
+#define APP_SIZE           65535U
 #define APP_CRC_VALUE      0xD41F4487
 #define APP_CRC_ADDRESS    0x08018000
 
@@ -15,6 +15,7 @@
 #include "Custom_RS485_Comm/Custom_RS485_Comm.h"
 #include "Console/Console.h"
 #include "POST/POST.h"
+#include "Flash/Flash.h"
 
 #define HEADER_1           0xAA
 #define HEADER_2           0x55
@@ -29,9 +30,12 @@ typedef void (*pFunction)(void);
 pFunction JumpToApplication;
 uint32_t JumpAddress;
 
+
+
 typedef enum {
-    Connect_Device      = 0xA1,
-    Disconnect_Device   = 0xA2,
+    Connect_Device      = 0xA0,
+    Disconnect_Device   = 0xA1,
+	Fetch_Info          = 0xA2,
     Write_Firmware      = 0xA3,
     Read_Firmware       = 0xA4,
     Erase_Firmware      = 0xA5,
@@ -54,10 +58,12 @@ void Write_Firmware_Func(void);
 void Read_Firmware_Func(void);
 void Erase_Firmware_Func(void);
 void Reboot_MCU_Func(void);
+void Fetch_Info_Func(void);
 
 const CommandEntry_t command_table[] = {
     {Connect_Device,      Connect_Device_Func},
     {Disconnect_Device,   Disconnect_Device_Func},
+	{Fetch_Info, Fetch_Info_Func},
     {Write_Firmware,      Write_Firmware_Func},
     {Read_Firmware,       Read_Firmware_Func},
     {Erase_Firmware,      Erase_Firmware_Func},
@@ -97,7 +103,8 @@ bool Validate_And_Execute_Command(uint8_t *buf, uint16_t len)
     return false;
 }
 
-/* =========================== Bootloader FSM =========================== */
+
+/* =========================== Bootloader Functions =========================== */
 typedef enum {
     STATE_WAIT_CONNECT,
     STATE_CONNECTED,
@@ -129,59 +136,25 @@ void Bootloader(void)
     }
 }
 
+bool Check_Firmware_Presence(void);
 
 POST_Result result;
+
 
 /* =========================== Application CRC Boot Decision =========================== */
 int main(void)
 {
 
-//	result = POST_ClockCheck();
-//	result = POST_CPUCoreTest();
-//	result = POST_SRAM_Test();
-//	result = POST_InterruptTest();
-//	result = POST_WatchdogTest();
-//	result = POST_ClockCheck();
-//
-//
-//    if (POST_CPUCoreTest()   != POST_OK){
-//    	fail_safe();
-//    }
-//    if (POST_SRAM_Test()     != POST_OK){
-//    	fail_safe();
-//    }
-////    if (POST_FlashCRC()      != POST_OK){
-////    	fail_safe();
-////    }
-//    if (POST_InterruptTest() != POST_OK){
-//    	fail_safe();
-//    }
-//    if (POST_WatchdogTest()  != POST_OK){
-//    	fail_safe();
-//    }
-//	POST_CPUCoreTest();
-//	POST_SRAM_Test();
+
+	result = false;
+	result = CPU_RegisterTest();
+	result = RAM_MarchCTest();
+
+
+
     MCU_Clock_Setup();
     Delay_Config();
     CRC_Init();
-
-
-
-//    if(POST_CPUCoreTest() == POST_OK){
-//    	printConsole("POST::CPUCore Test::Pass \r\n ");
-//    }
-//    else
-//    {
-//    	printConsole("POST::CPUCore Test::Fail \r\n ");
-//    }
-//    if( == POST_OK){
-//    	printConsole("POST::POST_SRAM_Test::Pass \r\n ");
-//    }
-//    else
-//    {
-//    	printConsole("POST::POST_SRAM_Test::Fail \r\n ");
-//    }
-//    if(POST_InterruptTest() == POST_OK) printConsole("POST:InterruptTest \r\n ");
 
 
     GPIO_Pin_Init(GPIOD, 12, GPIO_Configuration.Mode.General_Purpose_Output,
@@ -220,7 +193,14 @@ int main(void)
     GPIO_Pin_Init(GPIOC, 0, GPIO_Configuration.Mode.Input, GPIO_Configuration.Output_Type.None,
                   GPIO_Configuration.Speed.None, GPIO_Configuration.Pull.None, GPIO_Configuration.Alternate_Functions.None);
 
-    if ((GPIOC->IDR & GPIO_IDR_ID0) != 1) {
+    uint16_t jumper_read = GPIOC->IDR & GPIO_IDR_ID0;
+
+    bool firmware_check = false;
+
+    firmware_check = Check_Firmware_Presence();
+
+
+    if ((jumper_read == 0) || (firmware_check == false)) {
         Bootloader();
     } else {
         //uint32_t calculated_crc = CRC_Compute_Flash_Data(APP_ADDRESS, APP_SIZE);
@@ -250,23 +230,50 @@ int main(void)
 
 void Connect_Device_Func(void)
 {
+	GPIO_Pin_High(GPIOD, 12);
+	GPIO_Pin_Low(GPIOD, 13);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,8, (uint8_t *)buffer, 0, 1, len);
 	buffer[0] = 0xAA;
 	buffer[1] = 0x55;
 	buffer[2] = Connect_Device;
 	buffer[3] = Req_ACK;
-	buffer[4] = 0x01;
-	buffer[5] = 0x19;
-	buffer[6] = 0x01;
+	buffer[4] = 5;
+	buffer[5] = 0x01;
+	buffer[6] = 0x19;
 	buffer[7] = 0x01;
 	buffer[8] = 0x01;
-	CRC_Rec1 = CRC_Compute_8Bit_Block(&buffer[2], 7);
-	buffer[9]  = (CRC_Rec1 & 0xFF000000) >> 24;
-	buffer[10]  = (CRC_Rec1 & 0x00FF0000) >> 16;
-	buffer[11]  = (CRC_Rec1 & 0x0000FF00) >> 8;
-	buffer[12] = (CRC_Rec1 & 0x000000FF) >> 0;
-	buffer[13] = 0xBB;
-	buffer[14] = 0x66;
-	Custom_Comm_Send(buffer, 14);
+	buffer[9] = 0x01;
+	CRC_Rec1 = CRC_Compute_8Bit_Block(&buffer[2], 8);
+	buffer[10]  = (CRC_Rec1 & 0xFF000000) >> 24;
+	buffer[11]  = (CRC_Rec1 & 0x00FF0000) >> 16;
+	buffer[12]  = (CRC_Rec1 & 0x0000FF00) >> 8;
+	buffer[13] = (CRC_Rec1 & 0x000000FF) >> 0;
+	buffer[14] = 0xBB;
+	buffer[15] = 0x66;
+	Custom_Comm_Send(buffer, 16);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,8, (uint8_t *)buffer, 0, 1, len);
+}
+
+void Fetch_Info_Func(void)
+{
+	buffer[0] = 0xAA;
+	buffer[1] = 0x55;
+	buffer[2] = Fetch_Info;
+	buffer[3] = Req_ACK;
+	buffer[4] = 5;
+	buffer[5] = 0x01;
+	buffer[6] = 0x19;
+	buffer[7] = 0x01;
+	buffer[8] = 0x01;
+	buffer[9] = 0x01;
+	CRC_Rec1 = CRC_Compute_8Bit_Block(&buffer[2], 8);
+	buffer[10]  = (CRC_Rec1 & 0xFF000000) >> 24;
+	buffer[11]  = (CRC_Rec1 & 0x00FF0000) >> 16;
+	buffer[12]  = (CRC_Rec1 & 0x0000FF00) >> 8;
+	buffer[13] = (CRC_Rec1 & 0x000000FF) >> 0;
+	buffer[14] = 0xBB;
+	buffer[15] = 0x66;
+	Custom_Comm_Send(buffer, 16);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
 
 	//	DMA_Memory_To_Memory_Transfer(buffer1, 8,8, (uint8_t *)buffer, 0, 1, 256);
@@ -274,40 +281,49 @@ void Connect_Device_Func(void)
 
 void Disconnect_Device_Func(void)
 {
+	GPIO_Pin_High(GPIOD, 13);
+	GPIO_Pin_Low(GPIOD, 12);
 	buffer[0] = 0xAA;
 	buffer[1] = 0x55;
 	buffer[2] = Disconnect_Device;
 	buffer[3] = Req_ACK;
+	buffer[4] = 0;
 	CRC_Rec1 = CRC_Compute_8Bit_Block(&buffer[2], 7);
-	buffer[4]  = (CRC_Rec1 & 0xFF000000) >> 24;
-	buffer[5]  = (CRC_Rec1 & 0x00FF0000) >> 16;
-	buffer[6]  = (CRC_Rec1 & 0x0000FF00) >> 8;
-	buffer[7] = (CRC_Rec1 & 0x000000FF) >> 0;
-	buffer[8] = 0xBB;
-	buffer[9] = 0x66;
-	Custom_Comm_Send(buffer, 10);
+	buffer[5]  = (CRC_Rec1 & 0xFF000000) >> 24;
+	buffer[6]  = (CRC_Rec1 & 0x00FF0000) >> 16;
+	buffer[7]  = (CRC_Rec1 & 0x0000FF00) >> 8;
+	buffer[8] = (CRC_Rec1 & 0x000000FF) >> 0;
+	buffer[9] = 0xBB;
+	buffer[10] = 0x66;
+	Custom_Comm_Send(buffer, 11);
 	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
 }
 
 
 void Write_Firmware_Func(void)
 {
-	// Write Flash Memory
+	Flash_Unlock();
+	Flash_Write_Enable();
+	DMA_Memory_To_Memory_Transfer(buffer, 8, 1, 0x8010000, 8, 1, buffer[4]);
+	Flash_Write_Disable();
+	Flash_Lock();
 
+	// Write Flash Memory
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 11);
 	buffer[0] = 0xAA;
 	buffer[1] = 0x55;
 	buffer[2] = Write_Firmware;
 	buffer[3] = Req_ACK;
-
+	buffer[4] = Req_ACK;
 	CRC_Rec1 = CRC_Compute_8Bit_Block(&buffer[2], 7);
-	buffer[9]  = (CRC_Rec1 & 0xFF000000) >> 24;
-	buffer[10]  = (CRC_Rec1 & 0x00FF0000) >> 16;
-	buffer[11]  = (CRC_Rec1 & 0x0000FF00) >> 8;
-	buffer[12] = (CRC_Rec1 & 0x000000FF) >> 0;
-	buffer[13] = 0xBB;
-	buffer[14] = 0x66;
-	Custom_Comm_Send(buffer, 14);
-	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 256);
+	buffer[5]  = (CRC_Rec1 & 0xFF000000) >> 24;
+	buffer[6]  = (CRC_Rec1 & 0x00FF0000) >> 16;
+	buffer[7]  = (CRC_Rec1 & 0x0000FF00) >> 8;
+	buffer[8] = (CRC_Rec1 & 0x000000FF) >> 0;
+	buffer[0] = 0xBB;
+	buffer[10] = 0x66;
+	Custom_Comm_Send(buffer, 11);
+	DMA_Memory_To_Memory_Transfer(buffer1, 8,0, (uint8_t *)buffer, 8, 1, 11);
 }
 
 void Read_Firmware_Func(void)
@@ -367,3 +383,15 @@ void Reboot_MCU_Func(void)
 	NVIC_SystemReset();
 }
 
+bool Check_Firmware_Presence(void)
+{
+	for(uint16_t i = 0; i < APP_SIZE; i++)
+	{
+		if(Flash_Read_Single_Byte(APP_ADDRESS+i) == 0xFF)
+		{
+			return false;
+		}
+	}
+	return true;
+
+}
