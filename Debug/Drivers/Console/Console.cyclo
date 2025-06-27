@@ -1,4 +1,0 @@
-../Drivers/Console/Console.c:54:6:Console_IRQ	3
-../Drivers/Console/Console.c:91:6:Console_Init	1
-../Drivers/Console/Console.c:121:7:printConsole	1
-../Drivers/Console/Console.c:168:6:readConsole	3
