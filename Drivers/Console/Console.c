@@ -1,3 +1,5 @@
+#if DEBUG_PRINTF
+
 #include "Console.h"
 #include "CRC/CRC.h"
 
@@ -201,3 +203,5 @@ void Console_Init(int32_t baudrate) {
 
      return result;
  }
+
+#endif

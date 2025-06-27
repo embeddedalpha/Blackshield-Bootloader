@@ -1,3 +1,5 @@
+#if DEBUG_PRINTF
+
 /**
  * @file Console.h
  * @brief Console Interface for STM32F407VGT6.
@@ -114,3 +116,4 @@ int readConsole(const char *msg, ...);
 
 #endif /* CONSOLE_H_ */
 
+#endif
