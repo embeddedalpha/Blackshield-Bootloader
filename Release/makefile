@@ -12,6 +12,7 @@ RM := rm -rf
 -include Startup/subdir.mk
 -include Src/subdir.mk
 -include Drivers/USART/subdir.mk
+-include Drivers/POST/subdir.mk
 -include Drivers/GPIO/subdir.mk
 -include Drivers/Flash/subdir.mk
 -include Drivers/DMA/subdir.mk
@@ -59,9 +60,6 @@ default.size.stdout \
 OBJDUMP_LIST += \
 Blackshield_Bootloader.list \
 
-OBJCOPY_HEX += \
-Blackshield_Bootloader.hex \
-
 OBJCOPY_BIN += \
 Blackshield_Bootloader.bin \
 
@@ -88,11 +86,6 @@ Blackshield_Bootloader.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOO
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Blackshield_Bootloader.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "Blackshield_Bootloader.hex"
-	@echo 'Finished building: $@'
-	@echo ' '
-
 Blackshield_Bootloader.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "Blackshield_Bootloader.bin"
 	@echo 'Finished building: $@'
@@ -100,10 +93,10 @@ Blackshield_Bootloader.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL
 
 # Other Targets
 clean:
-	-$(RM) Blackshield_Bootloader.bin Blackshield_Bootloader.elf Blackshield_Bootloader.hex Blackshield_Bootloader.list Blackshield_Bootloader.map default.size.stdout
+	-$(RM) Blackshield_Bootloader.bin Blackshield_Bootloader.elf Blackshield_Bootloader.list Blackshield_Bootloader.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX) $(OBJCOPY_BIN)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

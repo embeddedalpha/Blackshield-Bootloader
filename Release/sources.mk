@@ -10,7 +10,6 @@ C_SRCS :=
 S_UPPER_SRCS := 
 O_SRCS := 
 CYCLO_FILES := 
-OBJCOPY_HEX := 
 SIZE_OUTPUT := 
 OBJDUMP_LIST := 
 SU_FILES := 
@@ -31,6 +30,7 @@ Drivers/Custom_RS485_Comm \
 Drivers/DMA \
 Drivers/Flash \
 Drivers/GPIO \
+Drivers/POST \
 Drivers/USART \
 Src \
 Startup \
