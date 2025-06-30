@@ -55,18 +55,37 @@ MEMORY
 ### Command Structure
 
 ```
-     __________________________________________________________________________________
-     |                |         |          |         |        |         |              |
-     | Start of Frame | Version | Sequence | Command | Length | Payload | End of Frame |
-     |________________|_________|__________|_________|________|_________|______________|
+     ___________________________________________________________________
+     |                |          |          |         |                 |              
+     | Start of Frame |  Command | Length   | Payload | End of Frame    |
+     |________________|__________|__________|_________|_________________|
 
      Start of Frame: 0xAA 0x55
-     Version: 0x01
-     Sequence: 0x01
      Command: 0xA0 - 0xA6
      Length: 0-255
      Payload: data[0] - data[255]
      End of Frame: 0xBB 0x66
 
 ```
+### Boot and Application Data
 
+16 bytes are reserved for Application Configuration
+4 bytes for Application length in bytes
+4 bytes for Application CRC in
+1 byte for Firmware Version
+1 byte for Product ID
+1 byte for Product Version
+1 byte for App version
+
+
+```ld
+MEMORY
+{
+  CCMRAM    (xrw)    : ORIGIN = 0x10000000,   LENGTH = 64K
+  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
+  APP_SPACE    (rx)    : ORIGIN = 0x08010000,   LENGTH = 64K 
+  APP_CONFIG(rw) : ORIGIN =  0x0801FFF0,  LENGTH = 16
+  
+}
+
+```
