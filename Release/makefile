@@ -20,6 +20,7 @@ RM := rm -rf
 -include Drivers/Console/subdir.mk
 -include Drivers/CRC/subdir.mk
 -include Drivers/CAN/subdir.mk
+-include Bootloader/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)

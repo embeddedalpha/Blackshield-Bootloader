@@ -3,13 +3,13 @@
 
 #define DEBUG_PRINTF 0
 
-#define APP_START_ADDRESS					0x08010000U
-#define APP_END_BOUNDARY_ADDRESS			0x0801FFFFU
+
+
 #define APP_DATA_LEN_ADDRESS				0x0801FFF0U
 #define APP_DATA_CRC_ADDRESS				0x0801FFF4U
 
 
-#define APP_SIZE           65535U
+#define APP_MAX_SIZE           65535U
 #define APP_CRC_VALUE      0xD41F4487
 #define APP_CRC_ADDRESS    0x08018000
 
@@ -17,6 +17,7 @@
 
 
 #include "main.h"
+#include "Bootloader.h"
 #include "CRC/CRC.h"
 #include "Custom_RS485_Comm/Custom_RS485_Comm.h"
 #if DEBUG_PRINTF
@@ -240,12 +241,12 @@ int main(void)
 			Delay_milli(20);
 #endif
 
-			MCU_Clock_DeInit();
-			Systick_DeInit();
-			__disable_irq();
-			__set_MSP(*((__IO uint32_t*) 0x8010000));
-			void (*app_reset_handler)(void) = (void*)(*(volatile uint32_t *)(0x8010000 + 4));
-			app_reset_handler();
+
+			Bootloader_Jump();
+
+
+
+
 		}
 		else{
 			while(1)
@@ -445,15 +446,7 @@ void Reboot_MCU_Func(void)
 bool Check_Firmware_Presence(void)
 {
 	uint32_t APP_SIZE_BYTES = __REV(Flash_Read_Single_Word(0x08020000));
-	uint32_t APP_SIZE_WORDS = APP_SIZE_BYTES/4;
-	for(uint16_t i = 0; i < APP_SIZE_WORDS; i++)
-	{
-		if(Flash_Read_Single_Byte(APP_START_ADDRESS+i) == 0xFFFFFFFF)
-		{
-			return false;
-		}
-	}
-	return true;
+	return ((APP_SIZE_BYTES != 0xFFFFFFFFU) && (APP_SIZE_BYTES <= APP_MAX_SIZE));
 }
 
 void Write_Complete_Func(void)

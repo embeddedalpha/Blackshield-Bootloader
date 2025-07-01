@@ -5,23 +5,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Drivers/USART/USART.c 
+../Bootloader/Bootloader.c 
 
 OBJS += \
-./Drivers/USART/USART.o 
+./Bootloader/Bootloader.o 
 
 C_DEPS += \
-./Drivers/USART/USART.d 
+./Bootloader/Bootloader.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Drivers/USART/%.o Drivers/USART/%.su Drivers/USART/%.cyclo: ../Drivers/USART/%.c Drivers/USART/subdir.mk
+Bootloader/%.o Bootloader/%.su Bootloader/%.cyclo: ../Bootloader/%.c Bootloader/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -I"D:/STM32_Bootloader/Blackshield_Bootloader/Drivers" -I"D:/STM32_Bootloader/Blackshield_Bootloader/Bootloader" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
-clean: clean-Drivers-2f-USART
+clean: clean-Bootloader
 
-clean-Drivers-2f-USART:
-	-$(RM) ./Drivers/USART/USART.cyclo ./Drivers/USART/USART.d ./Drivers/USART/USART.o ./Drivers/USART/USART.su
+clean-Bootloader:
+	-$(RM) ./Bootloader/Bootloader.cyclo ./Bootloader/Bootloader.d ./Bootloader/Bootloader.o ./Bootloader/Bootloader.su
 
-.PHONY: clean-Drivers-2f-USART
+.PHONY: clean-Bootloader
 

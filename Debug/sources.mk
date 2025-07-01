@@ -23,6 +23,7 @@ OBJCOPY_BIN :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Bootloader \
 Drivers/CAN \
 Drivers/CRC \
 Drivers/Console \

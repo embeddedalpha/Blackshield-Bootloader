@@ -1,3 +1,4 @@
+"./Bootloader/Bootloader.o"
 "./Drivers/CAN/CAN.o"
 "./Drivers/CRC/CRC.o"
 "./Drivers/Console/Console.o"
