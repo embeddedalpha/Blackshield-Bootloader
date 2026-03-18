@@ -13004,10 +13004,10 @@ int main(void)
  800594a:	617b      	str	r3, [r7, #20]
 
 
-	if ((jumper_read == 0) || (firmware_check == false)) {
+	if ((jumper_read == 1) || (firmware_check == false)) {
  800594c:	88fb      	ldrh	r3, [r7, #6]
  800594e:	b29b      	uxth	r3, r3
- 8005950:	2b00      	cmp	r3, #0
+ 8005950:	2b01      	cmp	r3, #1
  8005952:	d006      	beq.n	8005962 <main+0x126>
  8005954:	797b      	ldrb	r3, [r7, #5]
  8005956:	b2db      	uxtb	r3, r3

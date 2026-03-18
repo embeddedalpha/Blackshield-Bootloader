@@ -220,7 +220,7 @@ int main(void)
 	uint32_t APP_CRC_Temp = __REV(Flash_Read_Single_Word(0x08020004));
 
 
-	if ((jumper_read == 0) || (firmware_check == false)) {
+	if ((jumper_read == 1) || (firmware_check == false)) {
 		Bootloader();
 	} else {
 
