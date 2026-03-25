@@ -89,3 +89,26 @@ void Bootloader_Jump(void)
 
 
 }
+
+
+bool Bootloader_Write_Meta_Data(const bl_metadata_t *data)
+{
+	//Erase Flash
+	Flash_Unlock();
+	Flash_Write_Enable();
+	Flash_Erase_Sector(Sector_5);
+	Flash_Write_Disable();
+	Flash_Lock();
+
+	// Program
+	Flash_Unlock();
+	//	Flash_Write_Enable();
+	FLASH->CR &= ~FLASH_CR_PSIZE;
+	FLASH->CR |= (0 << FLASH_CR_PSIZE_Pos);
+	FLASH->CR |= FLASH_CR_PG;
+	DMA_Memory_To_Memory_Transfer((uint8_t *)data, 8, 1, (uint32_t)BL_METADATA_ADDR, 8, 1, sizeof(bl_metadata_t));
+	Flash_Write_Disable();
+	Flash_Lock();
+
+
+}
